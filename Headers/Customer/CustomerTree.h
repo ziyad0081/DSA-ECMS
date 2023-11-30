@@ -1,6 +1,6 @@
 #include<iostream>
 #include<vector>
-#include "RecordList.h"
+#include "../Record/RecordList.h"
 using namespace std;
 
 
