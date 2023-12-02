@@ -97,7 +97,3 @@ void RegionTree::Print(Region* root) {
 void RegionTree::PrintRegions(Region* root){
     Print(root);
 }
-
-void RegionTree::EditRegion(string region_name, string new_region_name){
-    SearchRegion(region_name)->name=new_region_name;
-}

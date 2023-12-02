@@ -24,7 +24,6 @@ public:
     Region* SearchRegion(string region_name);
     void DeleteRegion(string region_name);
     void PrintRegions(Region* root);
-    void EditRegion(string country_name, string new_country_name);
 };
 
 #endif // REGION_H
