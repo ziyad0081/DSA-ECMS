@@ -1,5 +1,5 @@
-#ifndef COUNTRYTREE_H
-#define COUNTRYTREE_H
+#ifndef COUNTRY_H
+#define COUNTRY_H
 
 #include<iostream>
 using namespace std;
