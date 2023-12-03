@@ -17,18 +17,15 @@ Customer Country::AddCustomer(string _name, string addr,const vector<unsigned in
 
 // CountryTree::CountryTree(): root(nullptr) {}
 
-void CountryTree::DestroyCountries(Country *root)
-{
-    if (root)
-    {
+void CountryTree::DestroyCountries(Country *root){
+    if (root){
         DestroyCountries(root->left);
         DestroyCountries(root->right);
         delete root;
     }
 }
 
-CountryTree::~CountryTree()
-{
+CountryTree::~CountryTree(){
     DestroyCountries(root);
 }
 
