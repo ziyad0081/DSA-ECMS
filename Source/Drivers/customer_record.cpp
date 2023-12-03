@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
-#include "../../Headers/Country/Country.h"
-#include "../../Headers/Customer/CustomerTree.h"
+#include "../../Source/Country/Country.cpp"
+#include "../../Source/Customer/CustomerTree.cpp"
 using namespace std;
 
 int main()
@@ -13,7 +13,6 @@ int main()
         cust->addRecord(abs(10* rand()%34),abs(20* rand()%34),string("2022/12/"+to_string(i)),"SUNNY",40,30,10);
     }
     
-
     cust->GetRecordsByPeriod("2022/12/12","2022/12/22");
     return 0;
 }

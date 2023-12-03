@@ -1,7 +1,4 @@
-#include"District.h"
-
-
-
+#include"../../Headers/District/District.h"
 
 
 district :: district(const string& name) : dist_name(name), right_dist(nullptr), left_dist(nullptr){}
