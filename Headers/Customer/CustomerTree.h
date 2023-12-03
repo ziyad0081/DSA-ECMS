@@ -10,8 +10,8 @@ using namespace std;
 class Customer
         {
             public:
-                friend class CustomerTree;
-                Customer( int ,string , string addr,const vector<unsigned int>&);
+                
+                Customer(int id ,string , string addr,const vector<unsigned int>&);
                 ~Customer();
 
                 string GetCustomerName();
