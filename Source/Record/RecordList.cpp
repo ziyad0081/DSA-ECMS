@@ -23,10 +23,10 @@ bool RecordList::Record::PrintRecord(){
 
     cout << setw(13) << setfill(' ') << left << "| Injection |"
          << setw(15) << setfill(' ') << left << "| Consomation |"
-         << setw(15) << left << setfill(' ') << "| Date |" << endl;
+         << setw(15) << left << setfill(' ') << right << "|   Date   |" << endl;
 
     cout << setw(13) << internal << setfill(' ') << injection
-         << setw(15) << internal<< setfill(' ') << consomation
+         << setw(15) << internal << setfill(' ') << consomation
          << setw(15) << setfill(' ') << record_date.Formatted() << endl;
 
 }

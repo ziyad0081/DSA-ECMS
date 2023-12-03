@@ -11,12 +11,11 @@ class Customer
         {
             public:
                 friend class CustomerTree;
-                Customer(string , const vector<unsigned int>&);
+                Customer( int ,string , string addr,const vector<unsigned int>&);
                 ~Customer();
 
                 string GetCustomerName();
 
-                
                 bool addRecord(int consomation, int injection, string date, string day_weather, int max_temp, int min_temp, int sunny_hours); //Adding a record into the customer's account;
                 void GetRecordsByPeriod(string start_date, string end_date); //Start and end dates will be passed as strings and parsed in the records tree.
                 void PrintRecords() {
@@ -28,40 +27,15 @@ class Customer
 
                 };
             private:
-
+                int unsigned account_id;
                 string customer_name;
-                string district_address;
+                string customer_address;
                 unsigned int family_members_count;
                 vector<unsigned int>family_ages;
-                Customer* customer_l;
-                Customer* customer_r;
-                unsigned int cumulative_injection;
+                vector<pair<string,int>> cumulative_inj;
                 RecordList customer_records;
 };
+// VECTOR OF IDS IN DISTRICT , VECTOR OF CUSTOMERS IN THE COUNTRY , AFTER INSERTION WE RESOLVE THE ADRESS AND ADD THE ID IN THE APPROPRIATE DISTRICT , IDS AUTO INCREMENT.                    
 
 
-
-
-
-class CustomerTree{
-
-
-    public:
-        CustomerTree();
-        ~CustomerTree();
-        void printCustomers(Customer*);
-
-        Customer* InsertCustomer(string, const vector<unsigned int>&);
-
-        bool GetAllRecords();
-        string GetAllRecords(unsigned int , unsigned int , unsigned int , unsigned int);
-
-        Customer* GetCustomerByName(const string&);
-
-        Customer* customer_root;
-
-    private:
-        Customer* InsertCustomerHelper(string, const vector<unsigned int>&, Customer*&,Customer*&);
-
-};
 #endif

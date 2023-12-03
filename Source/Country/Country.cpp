@@ -9,6 +9,14 @@ Country::~Country(){
     delete right;
 }
 
+unsigned int Country::customer_id = 0;
+
+Customer* Country::AddCustomer(string _name, string addr,const vector<unsigned int>& _family_ages){
+    country_customers[customer_id] = Customer(customer_id,_name,addr,_family_ages);
+    //country_regions.SearchRegion().SearchCity().searchDistrict().customers.pushback(id)  
+    customer_id++;
+    return &country_customers[customer_id-1];
+}
 /*--------------------CountryTree----------------------------------------*/
 
 CountryTree::CountryTree(): root(nullptr) {}
