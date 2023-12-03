@@ -9,6 +9,14 @@ Region::~Region(){
     delete right;
 }
 
+MarketingDepartment Region::GetDeptByCityName(string _name){
+    for(auto & dept : region_departments){ 
+        if(dept.city == _name){
+            return dept;
+        }
+    }
+    throw out_of_range("Region not found!");
+}
 /*--------------------RegionTree----------------------------------------*/
 
 RegionTree::RegionTree(): root(nullptr) {}

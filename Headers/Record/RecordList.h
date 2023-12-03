@@ -1,7 +1,7 @@
+#pragma once
+
 #include <iostream>
 using namespace std;
-#ifndef RECORDLIST_H
-#define RECORDLIST_H
 
 
 
@@ -57,5 +57,3 @@ class RecordList
         Record* tail_record;
 
 };
-
-#endif // RECORDLIST_H
