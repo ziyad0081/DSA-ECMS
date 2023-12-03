@@ -17,8 +17,8 @@ class RegionTree{
     Region* root;
     void Print(Region* root);
 public:
-
     RegionTree();
+    void DestroyRegions(Region *root);
     ~RegionTree();
     void InsertRegion(string region_name);
     Region* SearchRegion(string region_name);

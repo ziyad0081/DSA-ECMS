@@ -13,8 +13,19 @@ Region::~Region(){
 
 RegionTree::RegionTree(): root(nullptr) {}
 
-RegionTree::~RegionTree(){
-    delete root;
+void RegionTree::DestroyRegions(Region *root)
+{
+    if (root)
+    {
+        DestroyRegions(root->left);
+        DestroyRegions(root->right);
+        delete root;
+    }
+}
+
+RegionTree::~RegionTree()
+{
+    DestroyRegions(root);
 }
 
 void RegionTree::InsertRegion(string region_name){

@@ -15,7 +15,6 @@ struct Country{
     vector<Customer> country_customers;
     RegionTree country_regions;
     Country(string n);
-    ~Country();
     Customer AddCustomer(string _name, string addr,const vector<unsigned int>& _family_ages);
     static unsigned int customer_id;
 };
@@ -26,6 +25,7 @@ class CountryTree{
     void Print(Country* root);
 public:
     CountryTree():root(nullptr){};
+    void DestroyCountries(Country *root);
     ~CountryTree();
     void InsertCountry(string country_name);
     Country* SearchCountry(string country_name);

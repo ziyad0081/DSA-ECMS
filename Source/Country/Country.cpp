@@ -4,11 +4,6 @@
 /*--------------------Country----------------------------------------*/
 Country::Country(string n): name(n), left(nullptr), right(nullptr) {}
 
-Country::~Country(){
-    delete left;
-    delete right;
-}
-
 unsigned int Country::customer_id = 0;
 
 Customer Country::AddCustomer(string _name, string addr,const vector<unsigned int>& _family_ages){
@@ -22,8 +17,19 @@ Customer Country::AddCustomer(string _name, string addr,const vector<unsigned in
 
 // CountryTree::CountryTree(): root(nullptr) {}
 
-CountryTree::~CountryTree(){
-    delete root;
+void CountryTree::DestroyCountries(Country *root)
+{
+    if (root)
+    {
+        DestroyCountries(root->left);
+        DestroyCountries(root->right);
+        delete root;
+    }
+}
+
+CountryTree::~CountryTree()
+{
+    DestroyCountries(root);
 }
 
 void CountryTree::InsertCountry(string country_name){
