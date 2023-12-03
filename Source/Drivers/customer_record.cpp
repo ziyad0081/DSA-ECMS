@@ -5,6 +5,7 @@
 #include "../Region/Region.cpp"
 #include "../Customer/CustomerTree.cpp"
 #include "../Record/RecordList.cpp"
+
 using namespace std;
 
 int main()
@@ -21,6 +22,5 @@ int main()
     }
     cust_.GetRecordsByPeriod("2022/12/20","2022/12/25");
 
-    
     return 0;
 }
