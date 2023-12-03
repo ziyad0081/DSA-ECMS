@@ -28,7 +28,7 @@ bool RecordList::Record::PrintRecord(){
     cout << setw(13) << internal << setfill(' ') << injection
          << setw(15) << internal << setfill(' ') << consomation
          << setw(15) << setfill(' ') << record_date.Formatted() << endl;
-
+    return true;
 }
 
 bool RecordList::insertRecord(int consomation, int injection, string date, string day_weather, int max_temp, int min_temp, int sunny_hours){

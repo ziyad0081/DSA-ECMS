@@ -12,7 +12,6 @@ int main()
 {
     CountryTree tree;
     tree.InsertCountry("Algeria");
-    cout<<"*";
     auto cust = tree.SearchCountry("Algeria");
     
     auto cust_ = cust->AddCustomer("TEST","aaaa",vector<unsigned int>({1,2,3}));
