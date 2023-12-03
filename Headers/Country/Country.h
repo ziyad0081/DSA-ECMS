@@ -3,11 +3,12 @@
 
 #include<iostream>
 #include<vector>
-#include "../../Source/Customer/CustomerTree.cpp"
-#include "../../Source/Region/Region.cpp"
+#include "../Customer/CustomerTree.h"
+#include "../Region/Region.h"
 using namespace std;
 
 struct Country{
+    
     string name;
     Country* left;
     Country* right;
@@ -15,7 +16,7 @@ struct Country{
     RegionTree country_regions;
     Country(string n);
     ~Country();
-    Customer* AddCustomer(string _name, string addr,const vector<unsigned int>& _family_ages);
+    Customer AddCustomer(string _name, string addr,const vector<unsigned int>& _family_ages);
     static unsigned int customer_id;
 };
 
@@ -24,7 +25,7 @@ class CountryTree{
     Country* root;
     void Print(Country* root);
 public:
-    CountryTree();
+    CountryTree():root(nullptr){};
     ~CountryTree();
     void InsertCountry(string country_name);
     Country* SearchCountry(string country_name);
