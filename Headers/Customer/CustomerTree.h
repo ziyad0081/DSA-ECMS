@@ -1,11 +1,12 @@
+#pragma once 
+
 #include<iostream>
 #include<vector>
 #include "../Record/RecordList.h"
 using namespace std;
 
 
-#ifndef CUSTOMERTREE_H
-#define CUSTOMERTREE_H
+
 
 class Customer
         {
@@ -37,5 +38,3 @@ class Customer
 };
 // VECTOR OF IDS IN DISTRICT , VECTOR OF CUSTOMERS IN THE COUNTRY , AFTER INSERTION WE RESOLVE THE ADRESS AND ADD THE ID IN THE APPROPRIATE DISTRICT , IDS AUTO INCREMENT.                    
 
-
-#endif

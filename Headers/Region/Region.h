@@ -1,15 +1,16 @@
-#ifndef REGION_H
-#define REGION_H
-
+#pragma once
+#include "../Department/Department.h"
 #include<iostream>
+#include<vector>
 using namespace std;
 
 struct Region{
     string name;
     Region* left;
     Region* right;
-
-    Region(string n);
+    vector<MarketingDepartment> region_departments;
+    MarketingDepartment GetDeptByCityName(string _name);
+    Region(string _name);
     ~Region();
 };
 
@@ -25,5 +26,3 @@ public:
     void DeleteRegion(string region_name);
     void PrintRegions(Region* root);
 };
-
-#endif // REGION_H

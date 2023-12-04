@@ -1,5 +1,6 @@
 #include<iostream>
 #include "../../Headers/Country/Country.h"
+#include "../../Headers/Region/Region.h"
 
 /*--------------------Country----------------------------------------*/
 Country::Country(string n): name(n), left(nullptr), right(nullptr) {}
@@ -8,8 +9,20 @@ unsigned int Country::customer_id = 0;
 
 Customer Country::AddCustomer(string _name, string addr,const vector<unsigned int>& _family_ages){
 
-    
+    std::istringstream ss(addr);
+    // Declare variables to store the parsed values
+    std::string region, city, district;
+    // Use getline to split the input using commas
+    std::getline(ss, region, ',');
+    std::getline(ss, city, ',');
+    std::getline(ss, district, ',');
+
     country_customers.push_back(Customer(customer_id,_name,addr,_family_ages));
+    auto rg = country_regions.SearchRegion(region);
+    
+    rg = country_regions.SearchRegion(region);
+    auto dept = rg->GetDeptByCityName(city);
+    cout << dept.city << " <<<<<<<<<<<<<<<<<< " << endl;
     //country_regions.SearchRegion().SearchCity().searchDistrict().customers.pushback(id)
     return country_customers[customer_id++];
 }

@@ -1,40 +1,46 @@
-#include<iostream>
-#include<cmath>
-#include<string>
+#pragma once
+
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <string>
 using namespace std;
 
 
 
-struct district{
- public:
- friend class district_tree;
- district(const string& ="");
- string GetDistName();
- ~district();
+struct District{
+    public:
+      friend class DistrictTree;
+        District(const string& ="");
+        string GetDistName();
+        ~District();
 
- private:
- string dist_name;
- district* left_dist;
- district* right_dist;
+    private:
+        string dist_name;
+        District* left_dist;
+        District* right_dist;
 
  };
 
- class district_tree{
- public:
- district_tree();
- district_tree(const string&);
- district_tree(district*);
- ~district_tree();
- district* InsertDist(const string&);
- void DeleteDist(const string&);
- bool SearchForDist(const string&);
- void PrintDistTree();
- district* root_dist;
+ class DistrictTree{
+    
+    public:
+        DistrictTree();
+        DistrictTree(const string&);
+        DistrictTree(District*);
+        ~DistrictTree();
+        District* InsertDist(const string&);
+        void DeleteDist(const string&);
+        District* SearchForDist(const string&);
+        void PrintDistTree();
+        District* root_dist;
 
+        vector<int> customers_ids; 
+        
 
  private:
-  district* InsertDistAct(district*& new_dist, district*& root);
-  district* MinDist(district*);
-  void DeleteDistAct(const string &, district * &);
-  void PrintDistTreeAct(district*, int &);
- };
+    District* InsertDistAct(District*& new_dist, District*& root);
+    District* MinDist(District*);
+    void DeleteDistAct(const string &, District * &);
+    void PrintDistTreeAct(District*, int &);
+} ;
