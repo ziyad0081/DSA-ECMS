@@ -2,20 +2,32 @@
 #include "../../Headers/Region/Region.h"
 
 /*--------------------Region----------------------------------------*/
-Region::Region(string n): name(n), left(nullptr), right(nullptr) {}
+Region::Region(string n) {
+    name = n;
+    left = right = nullptr;
+    
+}
+    
 
 Region::~Region(){
     delete left;
     delete right;
 }
 
-MarketingDepartment Region::GetDeptByCityName(string _name){
-    for(auto & dept : region_departments){ 
-        if(dept.city == _name){
-            return dept;
+MarketingDepartment* Region::GetDeptByCityName(string _name){
+    if(!region_departments.size()){
+        return nullptr;
+    }
+    for(int i = 0; i < 10; i++){
+        if(region_departments[i]->city == _name){
+            return region_departments[i];
         }
     }
-    throw out_of_range("Region not found!");
+    return nullptr;
+}
+MarketingDepartment* Region::InsertDepartment(MarketingDepartment* dept){
+    region_departments.push_back(dept);
+    return dept;
 }
 /*--------------------RegionTree----------------------------------------*/
 
@@ -33,7 +45,7 @@ RegionTree::~RegionTree(){
     DestroyRegions(root);
 }
 
-void RegionTree::InsertRegion(string region_name){
+Region* RegionTree::InsertRegion(string region_name){
     Region* new_region= new Region(region_name);
     //Check if tree is empty
     if(!root) root=new_region;
@@ -46,19 +58,18 @@ void RegionTree::InsertRegion(string region_name){
                 current=current->left;
                 if(!current){
                     parent->left=new_region;
-                    break;
                 }
             }
             else if(region_name>current->name){
                 current=current->right;
                 if(!current){
                     parent->right=new_region;
-                    break;
                 }
             }
             else break;
         }
     }
+    return new_region;
 }
 
 Region* RegionTree::SearchRegion(string region_name){

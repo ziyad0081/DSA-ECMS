@@ -8,8 +8,9 @@ struct Region{
     string name;
     Region* left;
     Region* right;
-    vector<MarketingDepartment> region_departments;
-    MarketingDepartment GetDeptByCityName(string _name);
+    vector<MarketingDepartment*> region_departments;
+    MarketingDepartment* GetDeptByCityName(string _name);
+    MarketingDepartment* InsertDepartment(MarketingDepartment*);
     Region(string _name);
     ~Region();
 };
@@ -21,7 +22,7 @@ public:
     RegionTree();
     void DestroyRegions(Region *root);
     ~RegionTree();
-    void InsertRegion(string region_name);
+    Region* InsertRegion(string region_name);
     Region* SearchRegion(string region_name);
     void DeleteRegion(string region_name);
     void PrintRegions(Region* root);

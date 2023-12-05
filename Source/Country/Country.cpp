@@ -1,30 +1,37 @@
-#include<iostream>
+
 #include "../../Headers/Country/Country.h"
 #include "../../Headers/Region/Region.h"
+
+using namespace std;
 
 /*--------------------Country----------------------------------------*/
 Country::Country(string n): name(n), left(nullptr), right(nullptr) {}
 
 unsigned int Country::customer_id = 0;
-
-Customer Country::AddCustomer(string _name, string addr,const vector<unsigned int>& _family_ages){
-
-    std::istringstream ss(addr);
-    // Declare variables to store the parsed values
-    std::string region, city, district;
-    // Use getline to split the input using commas
-    std::getline(ss, region, ',');
-    std::getline(ss, city, ',');
-    std::getline(ss, district, ',');
-
-    country_customers.push_back(Customer(customer_id,_name,addr,_family_ages));
-    auto rg = country_regions.SearchRegion(region);
+MarketingDepartment* Country::InsertDepartment(string region, string city){
+    auto newDept = new MarketingDepartment(city);
+    country_departments.push_back(newDept);
+    auto located_region = (country_regions.SearchRegion(region) ? country_regions.SearchRegion(region) : country_regions.InsertRegion(region));
+    located_region->InsertDepartment(newDept);
+    return newDept;
+}
+//The add customer function first parses the address string, tries to resolve his location by region then by city and lastly the district within the latter
+Customer* Country::AddCustomer(string _name, string addr_region,string addr_city,string addr_district,const vector<unsigned int>& _family_ages){
     
-    rg = country_regions.SearchRegion(region);
-    auto dept = rg->GetDeptByCityName(city);
-    cout << dept.city << " <<<<<<<<<<<<<<<<<< " << endl;
-    //country_regions.SearchRegion().SearchCity().searchDistrict().customers.pushback(id)
-    return country_customers[customer_id++];
+    
+    //If the region is found then store it , else create it and store it    
+    auto located_region = (country_regions.SearchRegion(addr_region) ? country_regions.SearchRegion(addr_region) : country_regions.InsertRegion(addr_region)) ;
+    //The same logic as above but for the city
+    auto located_dept = (located_region->GetDeptByCityName(addr_city) ? located_region->GetDeptByCityName(addr_city) : InsertDepartment(addr_region, addr_city));
+    //Again , for the district :
+    auto located_district = (located_dept->department_districts->SearchForDist(addr_district) ? located_dept->department_districts->SearchForDist(addr_district) : located_dept->department_districts->InsertDist(addr_district));
+    auto addr = string(addr_region+","+addr_city+","+addr_district);
+    auto newCustomer = new Customer(customer_id,_name,addr,_family_ages);
+
+    country_customers.push_back(newCustomer);
+    located_district->InsertCustomer(newCustomer);
+    cout << "Customer " << newCustomer->GetCustomerName() <<"insertion succeeded" << endl;
+    return newCustomer;
 }
 /*--------------------CountryTree----------------------------------------*/
 
@@ -42,10 +49,10 @@ CountryTree::~CountryTree(){
     DestroyCountries(root);
 }
 
-void CountryTree::InsertCountry(string country_name){
+Country* CountryTree::InsertCountry(string country_name){
     Country* new_country= new Country(country_name);
     //Check if tree is empty
-    if(!root) root=new_country;
+    if(!root) {root=new_country; return new_country;}
     else{
         //Set current to traverse the tree and parent to keep updated with current's parent
         Country* current=root, *parent=root;
@@ -68,6 +75,7 @@ void CountryTree::InsertCountry(string country_name){
             else break;
         }
     }
+    return root;
 }
 
 Country* CountryTree::SearchCountry(string country_name){

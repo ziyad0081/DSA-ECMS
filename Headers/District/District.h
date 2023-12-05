@@ -11,14 +11,15 @@ using namespace std;
 struct District{
     public:
       friend class DistrictTree;
-        District(const string& ="");
+        District(const string& _name ="");
         string GetDistName();
         ~District();
-
+        Customer* InsertCustomer(Customer*);
     private:
         string dist_name;
         District* left_dist;
         District* right_dist;
+        vector<Customer*> district_customers;
 
  };
 
@@ -35,7 +36,7 @@ struct District{
         void PrintDistTree();
         District* root_dist;
 
-        vector<int> customers_ids; 
+        
         
 
  private:
