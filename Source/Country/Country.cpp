@@ -1,13 +1,13 @@
 
 #include "../../Headers/Country/Country.h"
 #include "../../Headers/Region/Region.h"
-
+#include <algorithm>
 using namespace std;
 
 /*--------------------Country----------------------------------------*/
 Country::Country(string n): name(n), left(nullptr), right(nullptr) {}
 
-unsigned int Country::customer_id = 0;
+
 MarketingDepartment* Country::InsertDepartment(string region, string city){
     auto newDept = new MarketingDepartment(city);
     country_departments.push_back(newDept);
@@ -16,8 +16,7 @@ MarketingDepartment* Country::InsertDepartment(string region, string city){
     return newDept;
 }
 //The add customer function first parses the address string, tries to resolve his location by region then by city and lastly the district within the latter
-Customer* Country::AddCustomer(string _name, string addr_region,string addr_city,string addr_district,const vector<unsigned int>& _family_ages){
-    
+Customer* Country::AddCustomer(int customer_id,string _name, string addr_region,string addr_city,string addr_district,const vector<unsigned int>& _family_ages){
     
     //If the region is found then store it , else create it and store it    
     auto located_region = (country_regions.SearchRegion(addr_region) ? country_regions.SearchRegion(addr_region) : country_regions.InsertRegion(addr_region)) ;
@@ -27,13 +26,19 @@ Customer* Country::AddCustomer(string _name, string addr_region,string addr_city
     auto located_district = (located_dept->department_districts->SearchForDist(addr_district) ? located_dept->department_districts->SearchForDist(addr_district) : located_dept->department_districts->InsertDist(addr_district));
     auto addr = string(addr_region+","+addr_city+","+addr_district);
     auto newCustomer = new Customer(customer_id,_name,addr,_family_ages);
-
     country_customers.push_back(newCustomer);
     located_district->InsertCustomer(newCustomer);
-    cout << "Customer " << newCustomer->GetCustomerName() <<"insertion succeeded" << endl;
+    cout << "Customer " << newCustomer->GetCustomerName() <<" ID : " << customer_id << " insertion succeeded" << endl;
     return newCustomer;
 }
 /*--------------------CountryTree----------------------------------------*/
+
+Customer* Country::GetCustomerByID(int customer_id)
+{
+    if(country_customers.empty()) return nullptr;
+    auto target = *(find_if(country_customers.begin(),country_customers.end(),[customer_id](const Customer* cust){ return customer_id == cust->GetCustomerID();}));
+    return target;
+}
 
 // CountryTree::CountryTree(): root(nullptr) {}
 
@@ -46,7 +51,7 @@ void CountryTree::DestroyCountries(Country *root){
 }
 
 CountryTree::~CountryTree(){
-    DestroyCountries(root);
+    //DestroyCountries(root);
 }
 
 Country* CountryTree::InsertCountry(string country_name){

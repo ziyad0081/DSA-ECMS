@@ -52,7 +52,7 @@ Region* RegionTree::InsertRegion(string region_name){
     else{
         //Set current to traverse the tree and parent to keep updated with current's parent
         Region* current=root, *parent=root;
-        while(1){
+        while(current){
             parent=current; //Parent gets updated before each movement of the current
             if(region_name<current->name){
                 current=current->left;

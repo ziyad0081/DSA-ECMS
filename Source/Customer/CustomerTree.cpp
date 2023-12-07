@@ -1,7 +1,9 @@
 
 #include "../../Headers/Customer/CustomerTree.h"
-
-
+#include <chrono>
+#include <iostream>
+#include <iomanip>
+using namespace std;
 
 Customer::Customer(int id,string _name, string addr,const vector<unsigned int>& _family_ages)
 {   account_id = id;
@@ -81,6 +83,7 @@ string Customer::GetCustomerName(){
 // }
 
 bool Customer::addRecord(int consomation, int injection, string _date, string day_weather, int max_temp, int min_temp, int sunny_hours){
+
     return customer_records.insertRecord(consomation, injection, _date, day_weather, max_temp,  min_temp, sunny_hours);
 }
 bool dateGreaterThan(string _date1, string _date2){
@@ -94,21 +97,33 @@ bool dateGreaterThan(string _date1, string _date2){
     date2_parsed[2] = stoi(_date2.substr(8,2));
     return (date1_parsed[0]>date2_parsed[0]) || (date1_parsed[0]==date2_parsed[0] && date1_parsed[1]>date2_parsed[1]) || (date1_parsed[0]==date2_parsed[0] && date1_parsed[1]==date2_parsed[1] && date1_parsed[2]>=date2_parsed[2] );
 }
-void Customer::GetRecordsByPeriod(string start_date, string end_date)
-{
-    if(dateGreaterThan(start_date,end_date))return;
-    auto it = customer_records.head_record;
-    
-    while(it){
-        
-        if(dateGreaterThan(it->record_date.date,start_date)){
-            it->PrintRecord() ;
 
+vector<RecordList::Record> Customer::GetRecordsByPeriod(string start_date, string end_date)
+{
+    // This checks for errors in parsing the period
+    try{
+        auto start_tp = ParseDateStrings(start_date);
+
+        auto end_tp = ParseDateStrings(end_date);
+        if(start_tp > end_tp){
+            return vector<RecordList::Record>({});
         }
-        if(dateGreaterThan(it->record_date.date,end_date)){
-            return;
+        vector<RecordList::Record> records; // Records will be gathered in a vector and redirected to the interface function
+        auto it = customer_records.head_record;
+        while(it){
+            if(it->getDate() >= start_tp && it->getDate() <= end_tp){
+                records.push_back(*it);
+            }
+            it = it->next_record;
+            
         }
-        it = it->next_record;
-        
+        return records; //Returning vectors is appearently not as costly since c++ compilers use RVO (Return Value Optimization) to construct the return variable directly with the resulting vector instead of copying it
+    } 
+    catch(const exception& e){
+        throw e; // Redirecting the exception to the higher function to deal with it
     }
+}
+float Customer::GetInjectionByMonth(string year_month)
+{    
+    return 0.0f;
 }

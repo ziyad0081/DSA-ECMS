@@ -13,13 +13,16 @@ struct Country{
     string name;
     Country* left;
     Country* right;
-    vector<Customer*> country_customers;
+    
     vector<MarketingDepartment*> country_departments;
+    vector<Customer*> country_customers;
+
     RegionTree country_regions;
     Country(string n);
-    Customer* AddCustomer(string _name, string addr_region,string addr_city,string addr_district,const vector<unsigned int>& _family_ages);
+    Customer* AddCustomer(int customer_id,string _name, string addr_region,string addr_city,string addr_district,const vector<unsigned int>& _family_ages);
+    Customer* GetCustomerByID(int customer_id);
     MarketingDepartment* InsertDepartment(string region, string city); //Dept address should be a region and a city;
-    static unsigned int customer_id;
+    
 };
 
 

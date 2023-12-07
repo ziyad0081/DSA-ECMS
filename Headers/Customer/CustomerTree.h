@@ -16,17 +16,11 @@ class Customer
                 ~Customer();
 
                 string GetCustomerName();
-
+                int GetCustomerID() const { return account_id; }
                 bool addRecord(int consomation, int injection, string date, string day_weather, int max_temp, int min_temp, int sunny_hours); //Adding a record into the customer's account;
-                void GetRecordsByPeriod(string start_date, string end_date); //Start and end dates will be passed as strings and parsed in the records tree.
-                void PrintRecords() {
-                    auto it = customer_records.head_record;
-                    while(it){
-                        it->PrintRecord();
-                        it = it->next_record;
-                    }
-
-                };
+                vector<RecordList::Record> GetRecordsByPeriod(string start_date, string end_date) ; //Start and end dates will be passed as strings and parsed in the records tree.
+                float GetInjectionByMonth(string year_month) ; // This will return customer total injection by month specified in format YYYY/MM
+                
             private:
                 int unsigned account_id;
                 string customer_name;
@@ -36,5 +30,4 @@ class Customer
                 vector<pair<string,int>> cumulative_inj;
                 RecordList customer_records;
 };
-// VECTOR OF IDS IN DISTRICT , VECTOR OF CUSTOMERS IN THE COUNTRY , AFTER INSERTION WE RESOLVE THE ADRESS AND ADD THE ID IN THE APPROPRIATE DISTRICT , IDS AUTO INCREMENT.                    
 
