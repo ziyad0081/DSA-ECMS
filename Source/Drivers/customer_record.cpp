@@ -1,6 +1,8 @@
+#pragma "-Wall"
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <ctime>
 #include "../Country/Country.cpp"
 #include "../Region/Region.cpp"
 #include "../Customer/CustomerTree.cpp"
@@ -8,35 +10,65 @@
 #include "../District/District.cpp"
 
 using namespace std;
+void LoadRecordsFromFile(CountryTree& tree){
+    fstream records_file;
+    records_file.open("records.csv",ios::in);
+    if(records_file.is_open()){
+        auto alg = tree.SearchCountry("Algeria");
+        string line;
+        
+        while(getline(records_file,line)){
+            vector<string> values;
+            string token;
+            istringstream iss(line);
+            while(getline(iss,token,',')) {
+                values.push_back(token);
+            }
+            auto cust = alg->GetCustomerByID(stoi(values[0]));
+            cust->addRecord(stoi(values[2]),stoi(values[3]),values[1],values[4],stoi(values[5]),stoi(values[6]),stoi(values[7]));
+        }
+    }
+}
 void LoadCustomerFromFile(CountryTree& tree){
     fstream customers_file;
     customers_file.open("customers.txt",ios::in);
     
     if(customers_file.is_open()){
-        string name, region_address, city_address, district_address;
-        string line;
-        int customer_id;
-        string age;
-        vector<unsigned int> family_ages;
         auto alg = tree.InsertCountry("Algeria");
-
+        
+        string line;
         while(getline(customers_file,line)){
             istringstream ss(line);
-            getline(ss,name,',');
-            getline(ss,region_address,',');
-            getline(ss,city_address,',');
-            getline(ss,district_address,',');
-            getline(ss,age,',');
-            family_ages.push_back(stoi(age));
-            alg->AddCustomer(name,region_address,city_address,district_address,family_ages);
+            vector<string> values;
+            vector<unsigned int> ages;
+            string token;
+            while(getline(ss,token,',')){
+                values.push_back(token);
+            }
+            if(values.size()>5){
+                for(int i = 5; i < values.size();i++){
+                    ages.push_back(stoi(values[i]));
+                }
+            }
+            
+            alg->AddCustomer(stoi(values[0]),values[1],values[2],values[3],values[4],ages);
+            
         }
+        customers_file.close();
     }
+    LoadRecordsFromFile(tree);
 }
 int main()
 {
     CountryTree tree;
-    LoadCustomerFromFile(tree);
-
     
+    LoadCustomerFromFile(tree);
+    
+    auto id1_records = tree.SearchCountry("Algeria")->GetCustomerByID(2)->GetRecordsByPeriod("2010-10-10","2020-10-10");
+    for(auto& record : id1_records ){
+        record.PrintRecord();
+    }
+
     return 0;
 }
+
