@@ -67,7 +67,7 @@ class RecordList
                 float   GetNetCost() const {
                     return 3*injection - 5*consomation;
                 } //This retrieves the net price for the daily transaction of the customer
-                float   GetInjection()  {return injection;}
+                float   GetInjection()  const;
                 bool    PrintRecord() const{
 
                      std::cout << std::setw(15) << "Date" << std::setw(15) << "Day Weather"

@@ -4,7 +4,47 @@
 #include <iostream>
 #include <iomanip>
 using namespace std;
+pair<TimePoint,TimePoint> GetDayPeriodFromMonth(string year_month) throw() {
+    //Evil chrono hacks to turn a YYYY/MM into a period by  day and return them as a pair;
+    tm time_struct = {};
+    istringstream iss(year_month);
+    iss >> get_time(&time_struct, "%Y-%m");
+    if(iss.fail()) {
+        throw invalid_argument("Invalid format was passed to the parser function");
+    }
+    time_struct.tm_mday = 1; //Set the day of the time struct to the beggining of the month
+    auto period_start = chrono::system_clock::from_time_t(mktime(&time_struct));
+    //To get the end of the month , we advance the month by 1 then go back by a second to land on the last day. (evil c++ hacks)
 
+    time_struct.tm_mon += 1;
+    auto period_end = chrono::system_clock::from_time_t(mktime(&time_struct)) - chrono::seconds(1);
+    
+    //Returning them as a pair
+    return make_pair(period_start,period_end);
+}
+string GetLastMonthFromMonthString(const string& year_month) throw(){ //YYYY-MM
+    istringstream iss(year_month);
+    tm time_info = {};
+     
+    iss >> get_time(&time_info, "%Y-%m");
+
+    if(iss.fail()){
+        throw invalid_argument("Invalid format was passed to the parser function");
+    }
+    //Converting into chrono timepoints to manipulate into last month
+    auto timepoint = chrono::system_clock::from_time_t(mktime(&time_info));
+    //Substracting a day
+    timepoint -= chrono::hours(1);
+
+    //Converting manipulated timepoint back to C standard time_t format
+    auto last_month_time_t = chrono::system_clock::to_time_t(timepoint) ;
+    //then to time_m
+    auto last_month_tm = *localtime(&last_month_time_t); //gmtime returns time in GMT format so not wise to use it without accomodation for time zones if hours are needed so we used localtime instead
+    
+    ostringstream output_stream_result;
+    output_stream_result << put_time(&last_month_tm,"%Y-%m") ; //Extract YYYY-MM format to the output stream
+    return output_stream_result.str(); //converting the stream into an std::string
+}
 Customer::Customer(int id,string _name, string addr,const vector<unsigned int>& _family_ages)
 {   account_id = id;
     customer_name = _name;
@@ -21,82 +61,32 @@ string Customer::GetCustomerName(){
     return customer_name;
 }
 
-// CustomerTree::CustomerTree():customer_root(nullptr){
-
-// }
-// CustomerTree::~CustomerTree(){
-
-// }
-
-// Customer* CustomerTree::InsertCustomer(string _name, const vector<unsigned int>& ages){
-//     Customer* ref_last = InsertCustomerHelper(_name,ages,customer_root,ref_last);
-//     return ref_last;
-// }
-
-// Customer* CustomerTree::InsertCustomerHelper(string _name, const vector<unsigned int>& ages,Customer*& root, Customer*& newCustomerRef){
-//     if(!root){
-//         newCustomerRef = new Customer(_name, ages);
-//         root = newCustomerRef;
-//         return root;
-//     }
-
-//     if(root->customer_name > _name){
-//         root->customer_l = InsertCustomerHelper(_name, ages, root->customer_l,newCustomerRef);
-
-//     }
-
-//     if(root->GetCustomerName() < _name){
-//         root->customer_r = InsertCustomerHelper(_name, ages, root->customer_r,newCustomerRef);
-//     }
-
-//     return root;
-// }
-
-
-// void CustomerTree::printCustomers(Customer* root){
-//     if(!root) return;
-//     cout << root->customer_name << "   " << root->family_members_count << endl;
-
-//     printCustomers(root->customer_l);
-//     printCustomers(root->customer_r);
-
-// }
-
-// Customer* CustomerTree::GetCustomerByName(const string& _name){
-
-//     Customer* it = CustomerTree::customer_root;
-
-//     while(it != nullptr){
-
-//         if(it->customer_name > _name){
-//             it = it->customer_l;
-//         }
-//         if(it->customer_name < _name){
-//             it = it->customer_r;
-//         }
-//         if(it->customer_name == _name){
-//             return it;
-//         }
-//     }
-//     return it ;
-
-// }
 
 bool Customer::addRecord(int consomation, int injection, string _date, string day_weather, int max_temp, int min_temp, int sunny_hours){
-
+    auto _date_month = _date.substr(0,_date.size()-3);
+    auto last_month = GetLastMonthFromMonthString(_date_month);
+    auto cumulative_inj_record = find_if(cumulative_inj.begin(),cumulative_inj.end(),[_date_month](const pair<string,float>& Rec){return Rec.first == _date_month;}); 
+    //Here we check whether the cumulative record for this month exists or not
+    if(cumulative_inj_record == cumulative_inj.end()){
+        //If it doesn't exist we create a record for it
+        cumulative_inj.push_back(make_pair(_date_month,injection));
+        //We point the iterator to the last dererefenceable element to use it, that is because the find iteration leaves it in the end() non-deref iterator 
+        cumulative_inj_record = cumulative_inj.end() - 1;    
+    }
+    else{
+        //If it exists we just add this new injection to it
+        cumulative_inj_record->second += injection;
+    }
+    //We check for existing last month record
+    auto target_last_month = find_if(cumulative_inj.begin() , cumulative_inj.end(),[last_month](const pair<string,float>& Rec){return Rec.first == last_month;});
+    if(target_last_month != cumulative_inj.end()){
+        //If it exists we just add its injection to the new one .
+            cumulative_inj_record->second += target_last_month->second;
+    }
+    // Finally the record is inserted into the list .
     return customer_records.insertRecord(consomation, injection, _date, day_weather, max_temp,  min_temp, sunny_hours);
 }
-bool dateGreaterThan(string _date1, string _date2){
-    int date1_parsed[3] ;
-    date1_parsed[0] = stoi(_date1.substr(0,4));
-    date1_parsed[1] = stoi(_date1.substr(5,2));
-    date1_parsed[2] = stoi(_date1.substr(8,2));
-    int date2_parsed[3] ;
-    date2_parsed[0] = stoi(_date2.substr(0,4));
-    date2_parsed[1] = stoi(_date2.substr(5,2));
-    date2_parsed[2] = stoi(_date2.substr(8,2));
-    return (date1_parsed[0]>date2_parsed[0]) || (date1_parsed[0]==date2_parsed[0] && date1_parsed[1]>date2_parsed[1]) || (date1_parsed[0]==date2_parsed[0] && date1_parsed[1]==date2_parsed[1] && date1_parsed[2]>=date2_parsed[2] );
-}
+
 
 vector<RecordList::Record> Customer::GetRecordsByPeriod(string start_date, string end_date)
 {
@@ -123,7 +113,11 @@ vector<RecordList::Record> Customer::GetRecordsByPeriod(string start_date, strin
         throw e; // Redirecting the exception to the higher function to deal with it
     }
 }
-float Customer::GetInjectionByMonth(string year_month)
-{    
-    return 0.0f;
+
+float Customer::GetCumInjectionByMonth(string year_month) {    
+    //Here we get the injection record of the customer in format YYYY-MM
+    auto target = find_if(cumulative_inj.begin() , cumulative_inj.end(), [year_month](const pair<string,float>& Rec){ return Rec.first == year_month; });
+    if(target != cumulative_inj.end()){
+        return target->second;
+    }
 }

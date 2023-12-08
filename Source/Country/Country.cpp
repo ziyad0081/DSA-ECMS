@@ -28,7 +28,7 @@ Customer* Country::AddCustomer(int customer_id,string _name, string addr_region,
     auto newCustomer = new Customer(customer_id,_name,addr,_family_ages);
     country_customers.push_back(newCustomer);
     located_district->InsertCustomer(newCustomer);
-    cout << "Customer " << newCustomer->GetCustomerName() <<" ID : " << customer_id << " insertion succeeded" << endl;
+    
     return newCustomer;
 }
 /*--------------------CountryTree----------------------------------------*/

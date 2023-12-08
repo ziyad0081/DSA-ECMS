@@ -58,17 +58,15 @@ void LoadCustomerFromFile(CountryTree& tree){
     }
     LoadRecordsFromFile(tree);
 }
+
 int main()
 {
     CountryTree tree;
     
     LoadCustomerFromFile(tree);
-    
-    auto id1_records = tree.SearchCountry("Algeria")->GetCustomerByID(2)->GetRecordsByPeriod("2010-10-10","2020-10-10");
-    for(auto& record : id1_records ){
-        record.PrintRecord();
-    }
-
+    auto custo = tree.SearchCountry("Algeria")->GetCustomerByID(1);
+    auto id1_records = custo->GetCumInjectionByMonth("2010-10");
+    cout << id1_records;
     return 0;
 }
 
