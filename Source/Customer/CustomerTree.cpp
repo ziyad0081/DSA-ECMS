@@ -3,10 +3,12 @@
 #include <chrono>
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 using namespace std;
 pair<TimePoint,TimePoint> GetDayPeriodFromMonth(string year_month) throw() {
     //Evil chrono hacks to turn a YYYY/MM into a period by  day and return them as a pair;
-    tm time_struct = {};
+    try {
+        tm time_struct = {};
     istringstream iss(year_month);
     iss >> get_time(&time_struct, "%Y-%m");
     if(iss.fail()) {
@@ -21,9 +23,14 @@ pair<TimePoint,TimePoint> GetDayPeriodFromMonth(string year_month) throw() {
     
     //Returning them as a pair
     return make_pair(period_start,period_end);
+    } catch(const exception& ex){
+        cerr << ex.what() << endl;
+        return make_pair(TimePoint::min(),TimePoint::min());
+    }
 }
 string GetLastMonthFromMonthString(const string& year_month) throw(){ //YYYY-MM
-    istringstream iss(year_month);
+    try {
+        istringstream iss(year_month);
     tm time_info = {};
      
     iss >> get_time(&time_info, "%Y-%m");
@@ -44,6 +51,10 @@ string GetLastMonthFromMonthString(const string& year_month) throw(){ //YYYY-MM
     ostringstream output_stream_result;
     output_stream_result << put_time(&last_month_tm,"%Y-%m") ; //Extract YYYY-MM format to the output stream
     return output_stream_result.str(); //converting the stream into an std::string
+    } catch(const exception& ex){
+        cerr << ex.what() << endl;   
+    }
+    return "ERROR";
 }
 Customer::Customer(int id,string _name, string addr,const vector<unsigned int>& _family_ages)
 {   account_id = id;
@@ -120,4 +131,5 @@ float Customer::GetCumInjectionByMonth(string year_month) {
     if(target != cumulative_inj.end()){
         return target->second;
     }
+    return 0.0f;
 }

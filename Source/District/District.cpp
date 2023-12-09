@@ -37,6 +37,7 @@ District* DistrictTree :: InsertDist(const string& name)
 
 Customer* District::InsertCustomer(Customer* new_customer){
     district_customers.push_back(new_customer);
+    return *(district_customers.end()-1);
 }
 
 District* DistrictTree :: InsertDistAct(District*& new_dist, District*& root)//Insertion process

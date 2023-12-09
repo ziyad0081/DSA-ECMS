@@ -10,7 +10,8 @@ using namespace std;
 typedef chrono::system_clock::time_point TimePoint;
 TimePoint ParseDateStrings(string date) throw(){
     //This function will parse date string into a chrono time point making it a  comparable object
-    tm time_struct = {};
+    try {
+        tm time_struct = {};
     
 
     istringstream date_stream(date);
@@ -25,6 +26,10 @@ TimePoint ParseDateStrings(string date) throw(){
     auto time_point = chrono::system_clock::from_time_t(std::mktime(&time_struct));
 
     return time_point;
+    } catch (const exception& ex){
+        cerr << ex.what();
+    }
+    return TimePoint::min();
 }
 struct DateInfo {
             

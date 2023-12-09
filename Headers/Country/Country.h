@@ -22,7 +22,6 @@ struct Country{
     Customer* AddCustomer(int customer_id,string _name, string addr_region,string addr_city,string addr_district,const vector<unsigned int>& _family_ages);
     Customer* GetCustomerByID(int customer_id);
     MarketingDepartment* InsertDepartment(string region, string city); //Dept address should be a region and a city;
-    
 };
 
 
