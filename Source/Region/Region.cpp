@@ -1,4 +1,5 @@
 #include<iostream>
+#include<stack>
 #include "../../Headers/Region/Region.h"
 
 /*--------------------Region----------------------------------------*/
@@ -124,3 +125,19 @@ void RegionTree::Print(Region* root) {
 void RegionTree::PrintRegions(Region* root){
     Print(root);
 }
+/*
+Customer* RegionTree::GetBestRegionCumInjUtil(Region* root, string year_month){
+    if (root == nullptr) return nullptr;
+
+    stack<Customer*> best_region_customers;
+    GetBestRegionCumInjUtil(root->left);
+    if(root->region_departments.GetBestDepartmentCumInj(year_month).GetCumInjectionByMonth(year_month)>best_region_customers.top()->GetCumInjectionByMonth(year_month))
+        best_region_customers.push(root->region_departments.GetBestDepartmentCumInj(year_month).GetCumInjectionByMonth(year_month));
+    GetBestRegionCumInjUtil(root->right);
+    return best_region_customers.top();
+}
+
+Customer* RegionTree::GetBestRegionCumInj(string year_month){
+    return GetBestRegionCumInjUtil(root, year_month);
+}
+*/

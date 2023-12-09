@@ -1,11 +1,14 @@
 #pragma once
 #include "../Department/Department.h"
+#include "../../Source/Customer/CustomerTree.cpp"
+#include "../../Headers/Department/Department.h"
 #include<iostream>
 #include<vector>
 using namespace std;
 
 struct Region{
     string name;
+    //DepartmentsTree region_departments; DepartmentTree not ready yet
     Region* left;
     Region* right;
     vector<MarketingDepartment*> region_departments;
@@ -26,4 +29,6 @@ public:
     Region* SearchRegion(string region_name);
     void DeleteRegion(string region_name);
     void PrintRegions(Region* root);
+    Customer* GetBestRegionCumInjUtil(Region* root, string year_month);
+    Customer* GetBestRegionCumInj(string year_month);
 };

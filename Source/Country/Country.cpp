@@ -1,7 +1,9 @@
 
 #include "../../Headers/Country/Country.h"
 #include "../../Headers/Region/Region.h"
+#include "../../Source/Customer/CustomerTree.cpp"
 #include <algorithm>
+#include <stack>
 using namespace std;
 
 /*--------------------Country----------------------------------------*/
@@ -139,3 +141,20 @@ void CountryTree::PrintCountries(Country* root){
 void CountryTree::EditCountry(string country_name, string new_country_name){
     SearchCountry(country_name)->name=new_country_name;
 }
+
+/*
+Customer* CountryTree::GetBestCountryCumInjUtil(Country* root, string year_month){
+    if (root == nullptr) return nullptr;
+
+    stack<Customer*> best_country_customers;
+    GetBestCountryCumInjUtil(root->left);
+    if(root->country_regions.GetBestRegionCumInj(year_month).GetCumInjectionByMonth(year_month)>best_country_customers.top()->GetCumInjectionByMonth(year_month))
+        best_country_customers.push(root->country_regions.GetBestRegionCumInj(year_month).GetCumInjectionByMonth(year_month));
+    GetBestCountryCumInjUtil(root->right);
+    return best_country_customers.top();
+}
+
+Customer* CountryTree::GetBestCountryCumInj(string year_month){
+    return GetBestCountryCumInjUtil(root, year_month);
+}
+*/
