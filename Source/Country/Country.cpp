@@ -1,13 +1,15 @@
-
 #include "../../Headers/Country/Country.h"
-#include "../../Headers/Region/Region.h"
-#include "../../Source/Customer/CustomerTree.cpp"
+#include "../Region/Region.cpp"
+#include "../District/District.cpp"
+#include "../Customer/CustomerTree.cpp"
 #include <algorithm>
 #include <stack>
 using namespace std;
 
 /*--------------------Country----------------------------------------*/
-Country::Country(string n): name(n), left(nullptr), right(nullptr) {}
+Country::Country(string n): name(n), left(nullptr), right(nullptr) {
+
+}
 
 
 MarketingDepartment* Country::InsertDepartment(string region, string city){
@@ -28,6 +30,8 @@ Customer* Country::AddCustomer(int customer_id,string _name, string addr_region,
     auto located_district = (located_dept->department_districts->SearchForDist(addr_district) ? located_dept->department_districts->SearchForDist(addr_district) : located_dept->department_districts->InsertDist(addr_district));
     auto addr = string(addr_region+","+addr_city+","+addr_district);
     auto newCustomer = new Customer(customer_id,_name,addr,_family_ages);
+    
+
     country_customers.push_back(newCustomer);
     located_district->InsertCustomer(newCustomer);
     
@@ -38,11 +42,30 @@ Customer* Country::AddCustomer(int customer_id,string _name, string addr_region,
 Customer* Country::GetCustomerByID(int customer_id)
 {
     if(country_customers.empty()) return nullptr;
-    auto target = *(find_if(country_customers.begin(),country_customers.end(),[customer_id](const Customer* cust){ return customer_id == cust->GetCustomerID();}));
-    return target;
+    auto target = (find_if(country_customers.begin(),country_customers.end(),[customer_id](const Customer* cust){ return customer_id == cust->GetCustomerID();}));
+    if(target == country_customers.end()){
+        return nullptr;
+    }
+    return *target;
+}
+bool Country::CumInjComparator(Customer* a, Customer* b, string year_month){
+    return a->GetCumInjectionByMonth(year_month) > b->GetCumInjectionByMonth(year_month);
 }
 
-// CountryTree::CountryTree(): root(nullptr) {}
+Customer* Country::GetMonthWinnerCustomer(string year_month)
+{
+    Customer* max = nullptr ;
+    for(auto& customer : country_customers){
+       if(max == nullptr){
+        max = customer;       
+       }
+       if(customer->GetCumInjectionByMonth(year_month) > max->GetCumInjectionByMonth(year_month)){
+        max = customer;
+       }
+    }
+    if(max) return max;
+    else return nullptr;
+}
 
 void CountryTree::DestroyCountries(Country *root){
     if (root){

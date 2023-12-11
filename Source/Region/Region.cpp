@@ -19,7 +19,7 @@ MarketingDepartment* Region::GetDeptByCityName(string _name){
     if(!region_departments.size()){
         return nullptr;
     }
-    for(int i = 0; i < 10; i++){
+    for(int i = 0; i < region_departments.size(); i++){
         if(region_departments[i]->city == _name){
             return region_departments[i];
         }

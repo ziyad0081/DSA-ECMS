@@ -1,9 +1,11 @@
 
-#include "../../Headers/Customer/CustomerTree.h"
+#include "../Record/RecordList.cpp"
+
 #include <chrono>
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
+#include "../../Headers/Customer/CustomerTree.h"
 using namespace std;
 pair<TimePoint,TimePoint> GetDayPeriodFromMonth(string year_month) throw() {
     //Evil chrono hacks to turn a YYYY/MM into a period by  day and return them as a pair;
@@ -57,7 +59,8 @@ string GetLastMonthFromMonthString(const string& year_month) throw(){ //YYYY-MM
     return "ERROR";
 }
 Customer::Customer(int id,string _name, string addr,const vector<unsigned int>& _family_ages)
-{   account_id = id;
+{
+    account_id = id;
     customer_name = _name;
     customer_address = addr;
     family_ages = vector<unsigned int>(family_ages);
@@ -73,8 +76,9 @@ string Customer::GetCustomerName(){
 }
 
 
-bool Customer::addRecord(int consomation, int injection, string _date, string day_weather, int max_temp, int min_temp, int sunny_hours){
+RecordList::Record* Customer::addRecord(int consomation, int injection, string _date, string day_weather, int max_temp, int min_temp, int sunny_hours){
     auto _date_month = _date.substr(0,_date.size()-3);
+    auto _date_year = _date.substr(0,4);
     auto last_month = GetLastMonthFromMonthString(_date_month);
     auto cumulative_inj_record = find_if(cumulative_inj.begin(),cumulative_inj.end(),[_date_month](const pair<string,float>& Rec){return Rec.first == _date_month;}); 
     //Here we check whether the cumulative record for this month exists or not
@@ -82,7 +86,7 @@ bool Customer::addRecord(int consomation, int injection, string _date, string da
         //If it doesn't exist we create a record for it
         cumulative_inj.push_back(make_pair(_date_month,injection));
         //We point the iterator to the last dererefenceable element to use it, that is because the find iteration leaves it in the end() non-deref iterator 
-        cumulative_inj_record = cumulative_inj.end() - 1;    
+        cumulative_inj_record = cumulative_inj.end() - 1;
     }
     else{
         //If it exists we just add this new injection to it
@@ -94,12 +98,13 @@ bool Customer::addRecord(int consomation, int injection, string _date, string da
         //If it exists we just add its injection to the new one .
             cumulative_inj_record->second += target_last_month->second;
     }
-    // Finally the record is inserted into the list .
-    return customer_records.insertRecord(consomation, injection, _date, day_weather, max_temp,  min_temp, sunny_hours);
+
+    customer_records.insertRecord(consomation, injection, _date, day_weather, max_temp,  min_temp, sunny_hours);
+    return customer_records.tail_record;
 }
 
 
-vector<RecordList::Record> Customer::GetRecordsByPeriod(string start_date, string end_date)
+vector<RecordList::Record> Customer::GetRecordsByPeriod(string start_date, string end_date) //DATES ARE IN YYYY-MM-DD
 {
     // This checks for errors in parsing the period
     try{
@@ -126,10 +131,22 @@ vector<RecordList::Record> Customer::GetRecordsByPeriod(string start_date, strin
 }
 
 float Customer::GetCumInjectionByMonth(string year_month) {    
+    if(cumulative_inj.empty()) return 0.0f;
     //Here we get the injection record of the customer in format YYYY-MM
     auto target = find_if(cumulative_inj.begin() , cumulative_inj.end(), [year_month](const pair<string,float>& Rec){ return Rec.first == year_month; });
     if(target != cumulative_inj.end()){
         return target->second;
     }
     return 0.0f;
+}
+
+float Customer::GetPaidAmountByYear(string year){
+    auto year_start = year + "-01-01";
+    auto year_end = year+ "-12-31";
+    auto year_records = GetRecordsByPeriod(year_start,year_end);
+    float result = 0;
+    for(auto& rec : year_records){
+        result += rec.GetNetCost();
+    }
+    return -result;
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "../Department/Department.h"
-#include "../../Source/Customer/CustomerTree.cpp"
+#include "../Customer/CustomerTree.h"
 #include "../../Headers/Department/Department.h"
 #include<iostream>
 #include<vector>

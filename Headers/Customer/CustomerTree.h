@@ -1,5 +1,4 @@
 #pragma once 
-
 #include<iostream>
 #include<vector>
 #include "../Record/RecordList.h"
@@ -16,11 +15,21 @@ class Customer
                 ~Customer();
 
                 string GetCustomerName();
+                string GetCustomerAddress() const {
+                    return customer_address;
+                }
+                int GetFamilyMembersCount() const {
+                    return family_members_count;
+                }
+                RecordList::Record* GetHeadRecord() const{
+                    return customer_records.head_record;
+                }
                 int GetCustomerID() const { return account_id; }
-                bool addRecord(int consomation, int injection, string date, string day_weather, int max_temp, int min_temp, int sunny_hours); //Adding a record into the customer's account;
+                RecordList::Record* addRecord(int consomation, int injection, string date, string day_weather, int max_temp, int min_temp, int sunny_hours); //Adding a record into the customer's account;
                 vector<RecordList::Record> GetRecordsByPeriod(string start_date, string end_date) ; //Start and end dates will be passed as strings and parsed in the records tree.
                 float GetCumInjectionByMonth(string year_month) ; // This will return customer total injection by month specified in format YYYY/MM
-                
+                float GetPaidAmountByYear(string year);
+
             private:
                 int unsigned account_id;
                 string customer_name;

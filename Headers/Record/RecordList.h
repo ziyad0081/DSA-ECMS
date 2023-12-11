@@ -12,8 +12,6 @@ TimePoint ParseDateStrings(string date) throw(){
     //This function will parse date string into a chrono time point making it a  comparable object
     try {
         tm time_struct = {};
-    
-
     istringstream date_stream(date);
     
     date_stream >> get_time(&time_struct,"%Y-%m-%d");
@@ -31,6 +29,7 @@ TimePoint ParseDateStrings(string date) throw(){
     }
     return TimePoint::min();
 }
+
 struct DateInfo {
             
             TimePoint date;
@@ -70,9 +69,22 @@ class RecordList
                 Record(int _consomation, int _injection, string date, string day_weather, int max_temp, int min_temp, int sunny_hours);
                 ~Record();
                 float   GetNetCost() const {
-                    return 3*injection - 5*consomation;
-                } //This retrieves the net price for the daily transaction of the customer
+                    return 5*consomation - 3*injection;
+                }
+                string GetDayWeather() const {
+                    return record_date.day_weather;
+                }
+                int GetDayMaxTemp() const {
+                    return record_date.max_temp;
+                }
+                int GetDayMinTemp() const {
+                    return record_date.min_temp;
+                }
+                 //This retrieves the net price for the daily transaction of the customer
                 float   GetInjection()  const;
+                float   GetConsumption() const {
+                    return consomation;
+                }
                 bool    PrintRecord() const{
 
                      std::cout << std::setw(15) << "Date" << std::setw(15) << "Day Weather"
@@ -88,6 +100,9 @@ class RecordList
                 } 
 
                 TimePoint getDate()  { return record_date.date;}
+                string getDateString() const {
+                    return record_date.Formatted();
+                }
                 Record*  next_record;
 
             private:

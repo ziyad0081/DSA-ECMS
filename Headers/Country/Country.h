@@ -1,27 +1,29 @@
-#ifndef COUNTRY_H
-#define COUNTRY_H
-
+#pragma once
 #include<iostream>
 #include<vector>
 #include<sstream>
-#include "../../Source/Country/Country.cpp"
-#include "../../Source/Region/Region.cpp"
+#include "../Department/Department.h"
+#include "../Region/Region.h"
+#include "../Customer/CustomerTree.h"
 using namespace std;
 
-struct Country{
-    
+class Country{
+    public : 
     string name;
     Country* left;
     Country* right;
     
     vector<MarketingDepartment*> country_departments;
     vector<Customer*> country_customers;
-
     RegionTree country_regions;
     Country(string n);
     Customer* AddCustomer(int customer_id,string _name, string addr_region,string addr_city,string addr_district,const vector<unsigned int>& _family_ages);
     Customer* GetCustomerByID(int customer_id);
+    Customer* GetMonthWinnerCustomer(string year_month);
     MarketingDepartment* InsertDepartment(string region, string city); //Dept address should be a region and a city;
+    
+    private:
+        bool CumInjComparator(Customer*, Customer*, string);    
 };
 
 
@@ -40,5 +42,3 @@ public:
     Customer* GetBestCountryCumInjUtil(Country* root, string year_month);
     Customer* GetBestCountryCumInj(string year_month);
 };
-
-#endif // COUNTRYTREE_H
