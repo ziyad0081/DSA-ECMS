@@ -1,3 +1,0 @@
-1,Zara,Bejaia,Setif,Tichy,20,27,22
-2,Ismail,Bejaia,Bejaia,Tichy,28,22,25
-3,Rania,Bejaia,Bejaia,Tichy,18,30,20

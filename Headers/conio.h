@@ -236,11 +236,11 @@ class __CONIO_H{
       }
       
     int getch(){
-      getch_echo(false);
+      return getch_echo(false);
       }
       
     int getche(){
-      getch_echo(true);
+      return getch_echo(true);
       }
       
     int wherexy(int&x,int&y){
@@ -299,16 +299,6 @@ class __CONIO_H{
       printf(str);
       return 0;
       }
-        
-    char*getpass(const char*prompt){
-      //implementada en unistd.h
-      }
-      
-    int gettext(int l,int t,int r,int b,void*destination){
-      
-      }
-    
-    
   }___CONIO_H;
 
 #define cprintf printf
