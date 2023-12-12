@@ -10,15 +10,27 @@
 ## 3. Usage :
 
 1. Clone the repository locally :
-```git clone https://github.com/ziyad0081/DSA-ECMS.git```
+```
+
+git clone https://github.com/ziyad0081/DSA-ECMS.git
+
+```
 
 - Or download and extract its zipfile.
 
 2. Build the binaries using makefile :
-```cd \Directory\to\repository\root && make```
+```
+
+cd \Directory\to\repository\root && make
+
+```
 
 3. Run the built binary `ECMS`:
-```cd Bin && ./ECMS```
+```
+
+cd Bin && ./ECMS
+
+```
 
 ## 4. Contribution :
 - This is a small project lacking various features and in dire need of refactoring.
