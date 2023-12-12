@@ -14,7 +14,7 @@ class ECMS{
     }
     int LoadRecordsFromFile(){
         fstream records_file;
-        records_file.open("../../DataFiles/records.csv",ios::in);
+        records_file.open("../DataFiles/records.csv",ios::in);
         if(records_file.is_open()){
             auto alg = countries.SearchCountry("Algeria");
             string line;
@@ -46,7 +46,7 @@ class ECMS{
     }
     int LoadCustomerFromFile(){
     fstream customers_file;
-    customers_file.open("../../DataFiles/customers.txt",ios::in);
+    customers_file.open("../DataFiles/customers.txt",ios::in);
     
     if(customers_file.is_open()){
         auto alg = countries.InsertCountry("Algeria");
