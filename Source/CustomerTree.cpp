@@ -104,7 +104,6 @@ RecordList::Record* Customer::addRecord(int consomation, int injection, string _
 vector<RecordList::Record> Customer::GetRecordsByPeriod(string start_date, string end_date) //DATES ARE IN YYYY-MM-DD
 {
     // This checks for errors in parsing the period
-    try{
         auto start_tp = ParseDateStrings(start_date);
 
         auto end_tp = ParseDateStrings(end_date);
@@ -121,10 +120,6 @@ vector<RecordList::Record> Customer::GetRecordsByPeriod(string start_date, strin
             
         }
         return records; //Returning vectors is appearently not as costly since c++ compilers use RVO (Return Value Optimization) to construct the return variable directly with the resulting vector instead of copying it
-    } 
-    catch(const exception& e){
-        throw e; // Redirecting the exception to the higher function to deal with it
-    }
 }
 
 float Customer::GetCumInjectionByMonth(string year_month) {    

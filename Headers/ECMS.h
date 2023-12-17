@@ -5,18 +5,20 @@
 #include "Country.h"
 #include <fstream>
 #include <algorithm>
-
+#include <mutex>
+#include <thread>
 class ECMS{
 
     public:
     CountryTree GetCountries() const {
         return countries;
     }
-    int LoadRecordsFromFile(){
+    int LoadRecordsFromFiles(string filename,mutex& mtx){
+
         fstream records_file;
-        records_file.open("../DataFiles/records.csv",ios::in);
+        records_file.open("./DataFiles/"+filename,ios::in);
         if(records_file.is_open()){
-            auto alg = countries.SearchCountry("Algeria");
+            auto alg = GetCountries().SearchCountry("Algeria");
             string line;
 
             while(getline(records_file,line)){
@@ -27,10 +29,12 @@ class ECMS{
                     values.push_back(token);
                 }
                 //This part updates both the customer's records and the department to which he belongs
+                lock_guard<mutex> lock(mtx);
                 auto cust = alg->GetCustomerByID(stoi(values[0]));
                 if(!cust){
                     continue;
                 }
+                
                 auto custDept = GetCustomerDept(*cust);
                 auto RecordYear = values[1].substr(0,4); //We extract the first four chars of the date passed in YYYY-MM-DD format
                 auto InsertedRecord = cust->addRecord(stoi(values[2]),stoi(values[3]),values[1],values[4],stoi(values[5]),stoi(values[6]),stoi(values[7]));
@@ -44,9 +48,23 @@ class ECMS{
             return 0;
         }
     }
+    int LoadRecordsFromFilesWrapper(){
+        vector<string> files = {"records_trim1.csv","records_trim2.csv","records_trim3.csv","records_trim4.csv"};
+        vector<thread> threads;
+        mutex mtx;
+        for(int i = 0; i < 4; i++){
+            threads.emplace_back([this,files,i,&mtx](){
+                this->LoadRecordsFromFiles(files[i],ref(mtx));
+            });
+        }
+        for(auto& thread : threads){
+            thread.join();
+        }
+        return 1;
+    }
     int LoadCustomerFromFile(){
     fstream customers_file;
-    customers_file.open("../DataFiles/customers.txt",ios::in);
+    customers_file.open("DataFiles/customers.csv",ios::in);
     
     if(customers_file.is_open()){
         auto alg = countries.InsertCountry("Algeria");
@@ -67,7 +85,6 @@ class ECMS{
             }
             
             auto newCust = alg->AddCustomer(stoi(values[0]),values[1],values[2],values[3],values[4],ages);
-            
         }
         customers_file.close();
         return 1;

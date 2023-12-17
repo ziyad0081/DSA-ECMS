@@ -29,7 +29,7 @@ Customer* Country::AddCustomer(int customer_id,string _name, string addr_region,
     auto newCustomer = new Customer(customer_id,_name,addr,_family_ages);
     
 
-    country_customers.push_back(newCustomer);
+    _country_customers[customer_id] = newCustomer;
     located_district->InsertCustomer(newCustomer);
     
     return newCustomer;
@@ -38,12 +38,17 @@ Customer* Country::AddCustomer(int customer_id,string _name, string addr_region,
 
 Customer* Country::GetCustomerByID(int customer_id)
 {
-    if(country_customers.empty()) return nullptr;
-    auto target = (find_if(country_customers.begin(),country_customers.end(),[customer_id](const Customer* cust){ return customer_id == cust->GetCustomerID();}));
-    if(target == country_customers.end()){
+    try{
+        auto target = _country_customers.at(customer_id);
+    } catch(const exception& e){
         return nullptr;
     }
-    return *target;
+    // if(country_customers.empty()) return nullptr;
+    // auto target = (find_if(country_customers.begin(),country_customers.end(),[customer_id](const Customer* cust){ return customer_id == cust->GetCustomerID();}));
+    // if(target == country_customers.end()){
+    //     return nullptr;
+    // }
+    // return *target;
 }
 bool Country::CumInjComparator(Customer* a, Customer* b, string year_month){
     return a->GetCumInjectionByMonth(year_month) > b->GetCumInjectionByMonth(year_month);
@@ -52,7 +57,7 @@ bool Country::CumInjComparator(Customer* a, Customer* b, string year_month){
 Customer* Country::GetMonthWinnerCustomer(string year_month)
 {
     Customer* max = nullptr ;
-    for(auto& customer : country_customers){
+    for(auto& [id , customer] : _country_customers){
        if(max == nullptr){
         max = customer;       
        }

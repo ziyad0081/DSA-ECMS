@@ -14,7 +14,7 @@ SRCS = $(wildcard $(SRCDIR)/*.cpp)
 OBJS = $(patsubst $(SRCDIR)/%.cpp,$(BINDIR)/%.o,$(SRCS))
 
 # Executable name
-EXEC = customer_record
+EXEC = ECMS
 
 # Main target
 all: $(BINDIR)/$(EXEC)
@@ -25,7 +25,7 @@ $(BINDIR)/$(EXEC): $(OBJS)
 
 # Compiling source files
 $(BINDIR)/%.o: $(SRCDIR)/%.cpp
-	$(CC) $(CFLAGS) -I$(INCDIR) -c $< -o $@
+	$(CC) $(CFLAGS) -I$(INCDIR)  -c $< -o $@
 
 
 clean:

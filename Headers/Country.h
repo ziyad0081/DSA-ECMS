@@ -4,6 +4,7 @@
 #include<iostream>
 #include<vector>
 #include<sstream>
+#include<unordered_map>
 #include "Region.h"
 using namespace std;
 
@@ -15,7 +16,7 @@ class Country{
     
     vector<MarketingDepartment*> country_departments;
     vector<Customer*> country_customers;
-
+    unordered_map<int,Customer*> _country_customers; 
     RegionTree country_regions;
     Country(string n);
     Customer* AddCustomer(int customer_id,string _name, string addr_region,string addr_city,string addr_district,const vector<unsigned int>& _family_ages);
@@ -23,7 +24,7 @@ class Country{
     Customer* GetMonthWinnerCustomer(string year_month);
     MarketingDepartment* InsertDepartment(string region, string city); //Dept address should be a region and a city;
     vector<MarketingDepartment*> GetSortedDeptsByYear(string year){
-        sort(country_departments.begin(), country_departments.end(), [&year](MarketingDepartment* deptA, MarketingDepartment* deptB ){return deptA->GetYearlyRecord(year) < deptB->GetYearlyRecord(year);});
+        sort(country_departments.begin(), country_departments.end(), [&year](MarketingDepartment* deptA, MarketingDepartment* deptB ){return deptA->GetYearlyRecord(year)->amount > deptB->GetYearlyRecord(year)->amount;});
         return country_departments;
     }
     

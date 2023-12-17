@@ -1,10 +1,13 @@
 #pragma once
+
 #include "ECMS.h"
 #include "tabulate.hpp"
 #include "conio.h"
-using namespace tabulate;
-using namespace std;
 
+using namespace tabulate;
+
+using namespace std;
+using std::cout;
 //WARNING THIS SECTION IN ITS ENTIRETY HANDLES SCREEN DISPLAY MENUS , MOST OF THE CODE IS STYLING
 //AND TABLE CREATION , AND IS THE UGLIEST CODE I HAVE EVER WRITTEN OR WILL EVER WRITE,
 //A PLETHORA OF REPETITIONS AND CODE THAT IS IN DIRE NEED FOR REFACTORING AND DOCUMENTATION. UNDERSTANDING THIS
@@ -81,7 +84,7 @@ int DataLoadingHandler(ECMS* program){
         auto customer_load = measureExecutionTime(&ECMS::LoadCustomerFromFile,program);
         
         if(customer_load.first){
-            auto records_load = measureExecutionTime(&ECMS::LoadRecordsFromFile,program);
+            auto records_load = measureExecutionTime(&ECMS::LoadRecordsFromFilesWrapper,program);
             table.add_row({">>>>> Customers file has been loaded (" + to_string(customer_load.second) + " s)"});
             if(records_load.first){
             table.add_row({">>>>> Records file has been loaded (" + to_string(records_load.second) + " s)"});
@@ -96,7 +99,7 @@ int DataLoadingHandler(ECMS* program){
             return 1;
             }
             else{
-                table.add_row({"CRITICAL ERROR WHILE LOADING FILES ! ---- Click ENTER to EXIT"});
+                table.add_row({"CRITICAL ERROR WHILE LOADING RECORDS FILES ! ---- Click ENTER to EXIT"});
                 table[1].format().color(Color::red).font_style({FontStyle::bold});
                 do{
                     system("clear");
@@ -196,9 +199,11 @@ int CustomerDetailsByIDHandler(int cust_id,string start_date, string end_date,EC
         //We get here if the customer does in fact exist;
         //We fill his info into the second row of the user info table
         UserInfoTable.add_row({target_customer->GetCustomerName(),target_customer->GetCustomerAddress(),to_string(target_customer->GetFamilyMembersCount()),target_customer->GetHeadRecord()->getDateString()});
+        
         //Look for his record in the period
         auto records = target_customer->GetRecordsByPeriod(start_date,end_date);
         //If there are no records in the period, we display a message in title table since it has one column
+        
         if(records.empty()){
             InfoTable.add_row({">>>>> Customer : " + target_customer->GetCustomerName() + " Has No Records In Specified Period ! "});
             InfoTable[1].format().font_color(Color::red);
@@ -214,6 +219,7 @@ int CustomerDetailsByIDHandler(int cust_id,string start_date, string end_date,EC
         }
         else{
             //If he does have records , fill the Data table with them.
+            
             InfoTable.add_row({"Press >>>Enter<<< to continue ..."});
             InfoTable[1].format().font_style({FontStyle::blink}).font_color(Color::green);
             DataTable.add_row({"Date","Injection(Kw)","Consumption(Kw)","Amount (DA)","Day Weather","Min Temp(C)","Max Temp(C)"});
@@ -825,6 +831,7 @@ void ECMS::RunProgram(){
         int choice = MainMenuHandler(this);
         switch(choice){
             case 0:
+                
                 UserBillInfoHandler(this);
                 break;
             case 1:
