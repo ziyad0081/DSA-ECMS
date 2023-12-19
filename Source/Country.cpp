@@ -1,12 +1,11 @@
-#include "Country.h"
+#include "../Headers/Country.h"
 #include <algorithm>
 #include <stack>
 using namespace std;
+//FIXME: include path
 
 /*--------------------Country----------------------------------------*/
-Country::Country(string n): name(n), left(nullptr), right(nullptr) {
-
-}
+Country::Country(string n): name(n), left(nullptr), right(nullptr), height(0) {}
 
 
 MarketingDepartment* Country::InsertDepartment(string region, string city){
@@ -106,6 +105,7 @@ Country* CountryTree::InsertCountry(string country_name){
         }
     }
     //implement balance
+    Balance(root);
     return root;
 }
 
@@ -149,6 +149,7 @@ void CountryTree::DeleteCountry(string country_name){
         target->name=temp->name;
         DeleteCountry(temp->name);
     }
+    Balance(root);
 }
 
 void CountryTree::Print(Country* root) {
@@ -182,3 +183,88 @@ Customer* CountryTree::GetBestCountryCumInj(string year_month){
     return GetBestCountryCumInjUtil(root, year_month);
 }
 */
+
+    int CountryTree::height( Country *t ) const
+    {
+        return t == nullptr ? -1 : t->height;
+    }
+
+
+
+    void CountryTree::RotateWithLeftChild( Country * & k2 )
+    {
+        Country *k1 = k2->left;
+        k2->left = k1->right;
+        k1->right = k2;
+        k2->height = max( height( k2->left ), height( k2->right ) ) + 1;
+        k1->height = max( height( k1->left ), k2->height ) + 1;
+        k2 = k1;
+    }
+
+    /**
+     * Rotate binary tree node with right child.
+     * For AVL trees, this is a single rotation for case 4.
+     * Update heights, then set new root.
+     */
+	// right right imbalance
+    void CountryTree::RotateWithRightChild( Country * & k1 )
+    {
+        Country *k2 = k1->right;
+        k1->right = k2->left;
+        k2->left = k1;
+        k1->height = max( height( k1->left ), height( k1->right ) ) + 1;
+        k2->height = max( height( k2->right ), k1->height ) + 1;
+        k1 = k2;
+    }
+
+    /**
+     * Double rotate binary tree node: first left child.
+     * with its right child; then node k3 with new left child.
+     * For AVL trees, this is a double rotation for case 2.
+     * Update heights, then set new root.
+     */
+	// Left right imbalance
+    void CountryTree::DoubleWithLeftChild( Country * & k3 )
+    {
+        RotateWithRightChild( k3->left );
+        RotateWithLeftChild( k3 );
+    }
+
+    /**
+     * Double rotate binary tree node: first right child.
+     * with its left child; then node k1 with new right child.
+     * For AVL trees, this is a double rotation for case 3.
+     * Update heights, then set new root.
+     */
+	// right left imbalance
+    void CountryTree::DoubleWithRightChild( Country * & k1 )
+    {
+        DoubleWithRightChild( k1->right );
+        DoubleWithRightChild( k1 );
+    }
+
+    // Assume t is balanced or within one of being balanced
+    void CountryTree::Balance( Country * & t )
+    {
+        if( t == nullptr )
+            return;
+        
+        if( height( t->left ) - height( t->right ) > 1 )
+			// Left left imbalance
+            if( height( t->left->left ) >= height( t->left->right ) )
+                RotateWithLeftChild( t );
+			// Left right imbalance
+            else
+                DoubleWithLeftChild( t );
+        else
+        if( height( t->right ) - height( t->left ) > 1 )
+			// Right right imbalance
+            if( height( t->right->right ) >= height( t->right->left ) )
+                RotateWithRightChild( t );
+			// Right left imbalance
+            else
+                DoubleWithRightChild( t );
+        
+		// Update the height
+        t->height = max( height( t->left ), height( t->right ) ) + 1;
+    }

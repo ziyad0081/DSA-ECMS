@@ -1,8 +1,9 @@
 #pragma once
 
-#include "ECMS.h"
-#include "tabulate.hpp"
-#include "conio.h"
+#include "../Headers/ECMS.h"
+//FIXME:path
+#include "../Headers/tabulate.hpp"
+#include "../Headers/conio.h"
 
 using namespace tabulate;
 

@@ -25,6 +25,7 @@ struct District{
         District* left_dist;
         District* right_dist;
         vector<Customer*> district_customers;
+        int height;
  };
 
  class DistrictTree{
@@ -61,5 +62,11 @@ struct District{
     District* MinDist(District*);
     void DeleteDistAct(const string &, District * &);
     void PrintDistTreeAct(District*, int &);
+    void RotateWithLeftChild( District * & k2 );
+    void RotateWithRightChild( District * & k1 );
+    void DoubleWithLeftChild( District * & k3 );
+    void DoubleWithRightChild( District * & k1 );
+    int  height( District *t ) const;
+    void Balance( District * & t );
 } ;
 #endif
