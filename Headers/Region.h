@@ -1,4 +1,4 @@
-#ifndef REGION_H
+#ifndef REGION_Hclear
 #define REGION_H
 
 #include "Department.h"
@@ -16,11 +16,18 @@ struct Region{
     MarketingDepartment* InsertDepartment(MarketingDepartment*);
     Region(string _name);
     ~Region();
+    int height;
 };
 
 class RegionTree{
     Region* root;
     void Print(Region* root);
+    void RotateWithLeftChild( Region * & k2 );
+    void RotateWithRightChild( Region * & k1 );
+    void DoubleWithLeftChild( Region * & k3 );
+    void DoubleWithRightChild( Region * & k1 );
+    int  height( Region *t ) const;
+    void Balance( Region * & t );
 public:
     RegionTree();
     void DestroyRegions(Region *root);
