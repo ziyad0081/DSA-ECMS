@@ -38,7 +38,17 @@ class ECMS{
                 auto custDept = GetCustomerDept(*cust);
                 auto RecordYear = values[1].substr(0,4); //We extract the first four chars of the date passed in YYYY-MM-DD format
                 auto InsertedRecord = cust->addRecord(stoi(values[2]),stoi(values[3]),values[1],values[4],stoi(values[5]),stoi(values[6]),stoi(values[7]));
+                if(reinterpret_cast<uintptr_t>(InsertedRecord) == 0xa){
+                    cout << "HERE";
+                }
                 auto TargetDeptRecord = custDept->GetYearlyRecord(RecordYear); //This function checks if there's a record for that year, if there is it returns it else it creates and returns it
+                if(!InsertedRecord){
+                    //break
+                    cout << "HO" << endl;
+                }
+                if(!TargetDeptRecord){
+                    cout << "HO" << endl;
+                }
                 TargetDeptRecord->amount += InsertedRecord->GetNetCost(); //We get the net cost of the customer and insert it into the appropriate dept 's appropriate record 
             }
             records_file.close();
@@ -52,7 +62,7 @@ class ECMS{
         vector<string> files = {"records_trim1.csv","records_trim2.csv","records_trim3.csv","records_trim4.csv"};
         vector<thread> threads;
         mutex mtx;
-        for(int i = 0; i < 4; i++){
+        for(int i = 0; i < 1; i++){
             threads.emplace_back([this,files,i,&mtx](){
                 this->LoadRecordsFromFiles(files[i],ref(mtx));
             });
@@ -92,7 +102,6 @@ class ECMS{
     else{
         return 0;
     }
-    
 }
 
 void RunProgram();

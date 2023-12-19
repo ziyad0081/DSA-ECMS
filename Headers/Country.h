@@ -15,14 +15,16 @@ class Country{
     Country* right;
 
     vector<MarketingDepartment*> country_departments;
-    vector<Customer*> country_customers;
+    AvlTree<Customer> country_customers;
     unordered_map<int,Customer*> _country_customers; 
     RegionTree country_regions;
     
     
     Country(string n);
     Customer* AddCustomer(int customer_id,string _name, string addr_region,string addr_city,string addr_district,const vector<unsigned int>& _family_ages);
+    void AddCustomer_(int customer_id,string _name, string addr_region,string addr_city,string addr_district,const vector<unsigned int>& _family_ages);
     Customer* GetCustomerByID(int customer_id);
+    Customer* GetCustomerByID_(int customer_id);
     Customer* GetMonthWinnerCustomer(string year_month);
     MarketingDepartment* InsertDepartment(string region, string city); //Dept address should be a region and a city;
     vector<MarketingDepartment*> GetSortedDeptsByYear(string year){

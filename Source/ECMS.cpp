@@ -198,10 +198,10 @@ int CustomerDetailsByIDHandler(int cust_id,string start_date, string end_date,EC
     else{
         //We get here if the customer does in fact exist;
         //We fill his info into the second row of the user info table
-        UserInfoTable.add_row({target_customer->GetCustomerName(),target_customer->GetCustomerAddress(),to_string(target_customer->GetFamilyMembersCount()),target_customer->GetHeadRecord()->getDateString()});
+        UserInfoTable.add_row({target_customer->GetCustomerName(),target_customer->GetCustomerAddress(),to_string(target_customer->GetFamilyMembersCount()),"AYA HAJA"});
         
         //Look for his record in the period
-        auto records = target_customer->GetRecordsByPeriod(start_date,end_date);
+        vector<Record> records = target_customer->GetRecordsByPeriod(start_date,end_date);
         //If there are no records in the period, we display a message in title table since it has one column
         
         if(records.empty()){
@@ -231,7 +231,7 @@ int CustomerDetailsByIDHandler(int cust_id,string start_date, string end_date,EC
             auto measure_end = chrono::high_resolution_clock::now();
             double duration = chrono::duration_cast<chrono::duration<double>>(measure_end-measure_start).count();
             InfoTable.add_row({"Data Fetched In : " + to_string(duration) + " s"});
-            for(auto& record : records){
+            for(Record& record : records){
                 DataTable.add_row({record.getDateString(), to_string(record.GetInjection()), to_string(record.GetConsumption()), to_string(-record.GetNetCost()), record.GetDayWeather(), to_string(record.GetDayMinTemp()), to_string(record.GetDayMaxTemp())});
                 injection_sum += record.GetInjection();
                 consumption_sum += record.GetConsumption();
@@ -290,7 +290,8 @@ int LocationDataDisplayHandler(ECMS* program,string start_date, string end_date,
                 for(auto& dist : dept->department_districts->GetAllDistricts()){
                     for(auto& cust : dist->GetCustomers()){
                         customers++;
-                        for(auto& rec : cust->GetRecordsByPeriod(start_date,end_date)){
+                        auto records = cust->GetRecordsByPeriod(start_date,end_date);
+                        for(auto& rec : records ){
                             consumption += rec.GetConsumption();
                             injection += rec.GetInjection();
                             revenue -= rec.GetNetCost();

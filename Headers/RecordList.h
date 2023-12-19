@@ -40,11 +40,7 @@ struct DateInfo {
             }           
          
 };
-
-class RecordList
-{
-    public:
-        class Record{
+class Record{
             public:
                 friend class Customer;
                 friend class RecordList;
@@ -67,24 +63,16 @@ class RecordList
                 float   GetConsumption() const {
                     return consomation;
                 }
-                bool    PrintRecord() const{
 
-                     std::cout << std::setw(15) << "Date" << std::setw(15) << "Day Weather"
-                      << std::setw(10) << "Max Temp" << std::setw(10) << "Min Temp"
-                      << std::setw(15) << "Sunny Hours" << std::setw(15) << "Consomation"
-                      << std::setw(15) << "Injection" << std::setw(15) << "Net Cost" << std::endl;
-
-                    std::cout << std::setw(15) << record_date.Formatted() << std::setw(15) << record_date.day_weather
-                      << std::setw(10) << record_date.max_temp << std::setw(10) << record_date.min_temp
-                      << std::setw(15) << record_date.sunny_hours << std::setw(15) << consomation
-                      << std::setw(15) << injection << std::setw(15) << GetNetCost() << std::endl;
-                    return true;
-                } 
-
-                TimePoint getDate()  { return record_date.date;}
+                TimePoint getDate() const { return record_date.date;}
                 string getDateString() const {
                     return record_date.Formatted();
                 }
+
+                bool operator<(const Record & rec){
+                    return this->getDate() < rec.getDate();
+                }
+                
                 Record*  next_record;
 
             private:
@@ -92,9 +80,11 @@ class RecordList
                 float    injection;
                 DateInfo record_date;
 
-        };
+};
 
-
+class RecordList
+{
+    public:
         RecordList();
         ~RecordList();
 

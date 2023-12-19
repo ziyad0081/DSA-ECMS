@@ -102,7 +102,14 @@ class AvlTree
     {
         return root == nullptr;
     }
-
+    bool operator!(){
+        return !root;
+    }
+    Comparable* search(int id){
+        Comparable* res(0);
+        search(id,root,res);
+        return res;
+    }
     /**
      * Print the tree contents in sorted order.
      */
@@ -125,7 +132,7 @@ class AvlTree
     /**
      * Insert x into the tree; duplicates are ignored.
      */
-    void insert( const Comparable & x )
+    void insert( Comparable & x )
     {
         insert( x, root );
     }
@@ -137,7 +144,12 @@ class AvlTree
     {
         insert( std::move( x ), root );
     }
-     
+    Comparable* insertForCustomer( Comparable && x ){
+        Comparable* buffer;
+        insertForCustomer( std::move( x ), root, buffer );
+        
+        return buffer;
+    }
     /**
      * Remove x from the tree. Nothing is done if x is not found.
      */
@@ -145,6 +157,19 @@ class AvlTree
     {
         remove( x, root );
     }
+    
+    vector<Comparable> RangeSearch(TimePoint start, TimePoint end){
+        vector<Comparable> result;
+        RangeSearch(start,end,root,result);
+        return result;
+    }
+    Comparable* FindWinnerCustomer(string year_month){
+        Comparable* buf = nullptr;
+        FindWinnerCustomer(root,buf,year_month);
+        return buf;
+    }
+    
+    
 
   private:
     struct AvlNode
@@ -169,7 +194,7 @@ class AvlTree
      * t is the node that roots the subtree.
      * Set the new root of the subtree.
      */
-    void insert( const Comparable & x, AvlNode * & t )
+    void insert( Comparable & x, AvlNode * & t )
     {
         if( t == nullptr )
             t = new AvlNode{ x, nullptr, nullptr };
@@ -182,7 +207,44 @@ class AvlTree
 		
         balance( t );
     }
+    void insertForCustomer( Comparable && x, AvlNode * & t , Comparable* &buffer){
+        if( t == nullptr ){
+            t = new AvlNode{ std::move(x), nullptr, nullptr };
+            buffer = &(t->element);
+        }
+        else if( x < t->element )
+            insertForCustomer( std::move(x), t->left, buffer );
+		
+        else if( t->element < x )
+            insertForCustomer( std::move(x), t->right, buffer );
+        balance( t );
+    }
+    void FindWinnerCustomer(AvlNode*& root, Comparable*& buffer,string year_month){
+        if(root == nullptr ) return;
 
+        FindWinnerCustomer(root->right, buffer, year_month);
+
+        if(!buffer || root->element.GetCumInjectionByMonth(year_month) > buffer->GetCumInjectionByMonth(year_month) ){
+            buffer = &root->element;
+        }
+
+        FindWinnerCustomer(root->left, buffer, year_month);
+    }
+    void search(int id, AvlNode* root, Comparable*& buffer){
+        if(!root){
+            return;
+        }
+        if(root->element.GetCustomerID() < id){
+            search(id,root->right,buffer);
+        }
+        else if(root->element.GetCustomerID() > id){
+            search(id,root->left,buffer);
+        }
+        else{
+            buffer = &root->element;
+            return;
+        }
+    }
     /**
      * Internal method to insert into a subtree.
      * x is the item to insert.
@@ -191,9 +253,9 @@ class AvlTree
      */
     void insert( Comparable && x, AvlNode * & t )
     {
-        if( t == nullptr )
+        if( t == nullptr ){
             t = new AvlNode{ std::move( x ), nullptr, nullptr };
-		
+            }
         else if( x < t->element )
             insert( std::move( x ), t->left );
 		
@@ -203,6 +265,21 @@ class AvlTree
         balance( t );
     }
      
+    void RangeSearch(TimePoint start_date,TimePoint end_date,AvlNode*head, vector<Comparable>& buffer){
+        if(!head){
+            return;
+        }
+        if(head->element.getDate() > start_date){
+            RangeSearch(start_date,end_date,head->left,buffer);
+        }
+
+        if(head->element.getDate() >= start_date && head->element.getDate() <= end_date){
+            buffer.push_back(head->element);
+        }
+        if(head->element.getDate() < end_date){
+            RangeSearch(start_date,end_date,head->right,buffer);
+        }
+    } 
     /**
      * Internal method to remove from a subtree.
      * x is the item to remove.

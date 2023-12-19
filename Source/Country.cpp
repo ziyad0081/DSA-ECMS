@@ -26,20 +26,35 @@ Customer* Country::AddCustomer(int customer_id,string _name, string addr_region,
     //Again , for the district :
     auto located_district = (located_dept->department_districts->SearchForDist(addr_district) ? located_dept->department_districts->SearchForDist(addr_district) : located_dept->department_districts->InsertDist(addr_district));
     auto addr = string(addr_region+","+addr_city+","+addr_district);
-    auto newCustomer = new Customer(customer_id,_name,addr,_family_ages);
     
+    AddCustomer_(customer_id, _name, addr_region,addr_city, addr_district, _family_ages);
+    return 0;
+}
 
-    _country_customers[customer_id] = newCustomer;
-    located_district->InsertCustomer(newCustomer);
+void Country::AddCustomer_(int customer_id,string _name, string addr_region,string addr_city,string addr_district,const vector<unsigned int>& _family_ages){
+    auto located_region = (country_regions.SearchRegion(addr_region) ? country_regions.SearchRegion(addr_region) : country_regions.InsertRegion(addr_region)) ;
+    auto located_dept = (located_region->GetDeptByCityName(addr_city) ? located_region->GetDeptByCityName(addr_city) : InsertDepartment(addr_region, addr_city));
+    auto located_district = (located_dept->department_districts->SearchForDist(addr_district) ? located_dept->department_districts->SearchForDist(addr_district) : located_dept->department_districts->InsertDist(addr_district));
     
-    return newCustomer;
+    auto addr = string(addr_region+","+addr_city+","+addr_district);
+    
+    auto newCustomer = country_customers.insertForCustomer(Customer(customer_id,_name,addr,_family_ages));
+    located_district->InsertCustomer(newCustomer);
+}
+
+Customer* Country::GetCustomerByID_(int customer_id){
+    if(!country_customers){
+        return 0;
+    }
+    return country_customers.search(customer_id);
 }
 /*--------------------CountryTree----------------------------------------*/
 
 Customer* Country::GetCustomerByID(int customer_id)
 {
     try{
-        auto target = _country_customers.at(customer_id);
+
+        auto target = GetCustomerByID_(customer_id);
         return target;
     } catch(const exception& e){
         return nullptr;
@@ -57,15 +72,16 @@ bool Country::CumInjComparator(Customer* a, Customer* b, string year_month){
 
 Customer* Country::GetMonthWinnerCustomer(string year_month)
 {
-    Customer* max = nullptr ;
-    for(auto& [id , customer] : _country_customers){
-       if(max == nullptr){
-        max = customer;       
-       }
-       if(customer->GetCumInjectionByMonth(year_month) > max->GetCumInjectionByMonth(year_month)){
-        max = customer;
-       }
-    }
+    Customer* max = country_customers.FindWinnerCustomer(year_month);;
+    // for(auto& [id , customer] : country_customers){
+    //    if(max == nullptr){
+    //     max = customer;       
+    //    }
+    //    if(customer->GetCumInjectionByMonth(year_month) > max->GetCumInjectionByMonth(year_month)){
+    //     max = customer;
+    //    }
+    // }
+    
     return max;
 }
 
