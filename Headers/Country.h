@@ -13,11 +13,13 @@ class Country{
     string name;
     Country* left;
     Country* right;
-    
+
     vector<MarketingDepartment*> country_departments;
     vector<Customer*> country_customers;
     unordered_map<int,Customer*> _country_customers; 
     RegionTree country_regions;
+    
+    
     Country(string n);
     Customer* AddCustomer(int customer_id,string _name, string addr_region,string addr_city,string addr_district,const vector<unsigned int>& _family_ages);
     Customer* GetCustomerByID(int customer_id);

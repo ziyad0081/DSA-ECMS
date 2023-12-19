@@ -40,6 +40,7 @@ Customer* Country::GetCustomerByID(int customer_id)
 {
     try{
         auto target = _country_customers.at(customer_id);
+        return target;
     } catch(const exception& e){
         return nullptr;
     }
@@ -104,6 +105,7 @@ Country* CountryTree::InsertCountry(string country_name){
             else break;
         }
     }
+    //implement balance
     return root;
 }
 
