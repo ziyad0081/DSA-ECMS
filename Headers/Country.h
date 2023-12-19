@@ -11,16 +11,21 @@ using namespace std;
 class Country{
     public : 
     string name;
+    int height;
     Country* left;
     Country* right;
-    
+
     vector<MarketingDepartment*> country_departments;
-    vector<Customer*> country_customers;
+    AvlTree<Customer> country_customers;
     unordered_map<int,Customer*> _country_customers; 
     RegionTree country_regions;
+    
+    
     Country(string n);
     Customer* AddCustomer(int customer_id,string _name, string addr_region,string addr_city,string addr_district,const vector<unsigned int>& _family_ages);
+    void AddCustomer_(int customer_id,string _name, string addr_region,string addr_city,string addr_district,const vector<unsigned int>& _family_ages);
     Customer* GetCustomerByID(int customer_id);
+    Customer* GetCustomerByID_(int customer_id);
     Customer* GetMonthWinnerCustomer(string year_month);
     MarketingDepartment* InsertDepartment(string region, string city); //Dept address should be a region and a city;
     vector<MarketingDepartment*> GetSortedDeptsByYear(string year){
@@ -36,6 +41,12 @@ class Country{
 class CountryTree{
     Country* root;
     void Print(Country* root);
+    void RotateWithLeftChild( Country * & k2 );
+    void RotateWithRightChild( Country * & k1 );
+    void DoubleWithLeftChild( Country * & k3 );
+    void DoubleWithRightChild( Country * & k1 );
+    int  height( Country *t ) const;
+    void Balance( Country * & t );
 public:
     CountryTree():root(nullptr){};
     void DestroyCountries(Country *root);
@@ -45,8 +56,8 @@ public:
     void DeleteCountry(string country_name);
     void PrintCountries(Country* root);
     void EditCountry(string country_name, string new_country_name);
-    Customer* GetBestCountryCumInjUtil(Country* root, string year_month);
-    Customer* GetBestCountryCumInj(string year_month);
+    //Customer* GetBestCountryCumInjUtil(Country* root, string year_month);
+    //Customer* GetBestCountryCumInj(string year_month);
 };
 
 #endif

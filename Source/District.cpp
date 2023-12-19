@@ -1,7 +1,9 @@
-#include "District.h"
+#include "../Headers/District.h"
+//FIXME: include path
 
 
-District :: District(const string& name) : dist_name(name), right_dist(nullptr), left_dist(nullptr){}
+
+District :: District(const string& name) : dist_name(name), right_dist(nullptr), left_dist(nullptr), height(0) {}
 
 
 District :: ~District(){}
@@ -140,3 +142,87 @@ void DistrictTree :: PrintDistTree()
 }
 
 
+    int DistrictTree::height( District *t ) const
+    {
+        return t == nullptr ? -1 : t->height;
+    }
+
+
+
+    void DistrictTree::RotateWithLeftChild( District * & k2 )
+    {
+        District *k1 = k2->left_dist;
+        k2->left_dist = k1->right_dist;
+        k1->right_dist = k2;
+        k2->height = max( height( k2->left_dist ), height( k2->right_dist ) ) + 1;
+        k1->height = max( height( k1->left_dist ), k2->height ) + 1;
+        k2 = k1;
+    }
+
+    /**
+     * Rotate binary tree node with right child.
+     * For AVL trees, this is a single rotation for case 4.
+     * Update heights, then set new root.
+     */
+	// right right imbalance
+    void DistrictTree::RotateWithRightChild( District * & k1 )
+    {
+        District *k2 = k1->right_dist;
+        k1->right_dist = k2->left_dist;
+        k2->left_dist = k1;
+        k1->height = max( height( k1->left_dist ), height( k1->right_dist ) ) + 1;
+        k2->height = max( height( k2->right_dist ), k1->height ) + 1;
+        k1 = k2;
+    }
+
+    /**
+     * Double rotate binary tree node: first left child.
+     * with its right child; then node k3 with new left child.
+     * For AVL trees, this is a double rotation for case 2.
+     * Update heights, then set new root.
+     */
+	// Left right imbalance
+    void DistrictTree::DoubleWithLeftChild( District * & k3 )
+    {
+        RotateWithRightChild( k3->left_dist );
+        RotateWithLeftChild( k3 );
+    }
+
+    /**
+     * Double rotate binary tree node: first right child.
+     * with its left child; then node k1 with new right child.
+     * For AVL trees, this is a double rotation for case 3.
+     * Update heights, then set new root.
+     */
+	// right left imbalance
+    void DistrictTree::DoubleWithRightChild( District * & k1 )
+    {
+        DoubleWithRightChild( k1->right_dist );
+        DoubleWithRightChild( k1 );
+    }
+
+    // Assume t is balanced or within one of being balanced
+    void DistrictTree::Balance( District * & t )
+    {
+        if( t == nullptr )
+            return;
+        
+        if( height( t->left_dist ) - height( t->right_dist ) > 1 )
+			// Left left imbalance
+            if( height( t->left_dist->left_dist ) >= height( t->left_dist->right_dist ) )
+                RotateWithLeftChild( t );
+			// Left right imbalance
+            else
+                DoubleWithLeftChild( t );
+        else
+        if( height( t->right_dist ) - height( t->left_dist ) > 1 )
+			// Right right imbalance
+            if( height( t->right_dist->right_dist ) >= height( t->right_dist->left_dist ) )
+                RotateWithRightChild( t );
+			// Right left imbalance
+            else
+                DoubleWithRightChild( t );
+        
+		// Update the height
+        t->height = max( height( t->left_dist ), height( t->right_dist ) ) + 1;
+    }
