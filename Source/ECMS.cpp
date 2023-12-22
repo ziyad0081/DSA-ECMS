@@ -3,7 +3,7 @@
 #include "ECMS.h"
 #include "tabulate.hpp"
 #include "conio.h"
-
+#include <cstdlib>
 using namespace tabulate;
 
 using namespace std;
@@ -231,11 +231,47 @@ int CustomerDetailsByIDHandler(int cust_id,string start_date, string end_date,EC
             auto measure_end = chrono::high_resolution_clock::now();
             double duration = chrono::duration_cast<chrono::duration<double>>(measure_end-measure_start).count();
             InfoTable.add_row({"Data Fetched In : " + to_string(duration) + " s"});
+            vector<float> plot_data_injection;
+            vector<float> plot_data_consumption;
+            vector<float> plot_data_avg_temp;
+            string consumption_arg;
+            string injection_arg;
+            string avgtemp_arg;
             for(auto& record : records){
+
                 DataTable.add_row({record.getDateString(), to_string(record.GetInjection()), to_string(record.GetConsumption()), to_string(-record.GetNetCost()), record.GetDayWeather(), to_string(record.GetDayMinTemp()), to_string(record.GetDayMaxTemp())});
                 injection_sum += record.GetInjection();
+                plot_data_consumption.push_back(record.GetConsumption());
+                plot_data_injection.push_back(record.GetInjection());
+                plot_data_avg_temp.push_back((record.GetDayMaxTemp()+record.GetDayMinTemp())/2);
                 consumption_sum += record.GetConsumption();
                 Amount -= record.GetNetCost();
+            }
+            for (size_t i = 0; i < plot_data_consumption.size(); ++i) {
+                consumption_arg += std::to_string((int)plot_data_consumption[i]);
+                if (i < plot_data_consumption.size() - 1) {
+                    consumption_arg += ",";
+                }
+            }
+            for (size_t i = 0; i < plot_data_injection.size(); ++i) {
+                injection_arg += std::to_string((int)plot_data_injection[i]);
+                if (i < plot_data_injection.size() - 1) {
+                    injection_arg += ",";
+                }
+            }
+            for (size_t i = 0; i < plot_data_avg_temp.size(); ++i) {
+                avgtemp_arg += std::to_string((int)plot_data_avg_temp[i]);
+                if (i < plot_data_avg_temp.size() - 1) {
+                    avgtemp_arg += ",";
+                }
+            }
+            fstream python_file;
+            python_file.open("customer_bill.csv",ios::out);
+
+            if(python_file.is_open()){
+                python_file << injection_arg << endl << consumption_arg << endl << "Date" << endl << target_customer->GetCustomerName() << endl << avgtemp_arg;
+                python_file.close();
+                
             }
             DataTable.add_row({"TOTAL >>>>", to_string(injection_sum), to_string(consumption_sum),to_string(Amount),"N/A","N/A","N/A"});
             DataTable.row(1+records.size()).format().font_color(Color::green);

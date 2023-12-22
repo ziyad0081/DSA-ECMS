@@ -45,8 +45,6 @@ public:
     void DeleteCountry(string country_name);
     void PrintCountries(Country* root);
     void EditCountry(string country_name, string new_country_name);
-    Customer* GetBestCountryCumInjUtil(Country* root, string year_month);
-    Customer* GetBestCountryCumInj(string year_month);
 };
 
 #endif
